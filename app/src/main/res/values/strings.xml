@@ -20,6 +20,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_welcome_activity">welcome_activity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_app_start">AppStart</string>
 
     <!-- Further use -->
 
