@@ -9,8 +9,7 @@
         android:theme="@style/AppTheme" >
         <!-- Welcome -->
         <activity
-            android:name=".AppStart"
-            android:label="@string/title_activity_app_start" >
+            android:name=".AppStart">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
