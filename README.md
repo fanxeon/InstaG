@@ -14,3 +14,5 @@ WEBSITE URL	https://github.com/fanxeon/InstaG
 REDIRECT URI	https://github.com/fanxeon/InstaG
 
 SUPPORT EMAIL	fanxuanhow@gmail.com
+
+access_token=1943919670.5a842f4.9a16f17162464bb181ef34ccfb6ac4c1
