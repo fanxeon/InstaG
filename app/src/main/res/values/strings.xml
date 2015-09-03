@@ -11,6 +11,11 @@
     <string name="title_section3">Profile</string>
     <string name="title_section4">Sync</string>
 
+    <!-- Authentication strings -->
+    <string name="client_id">5a842f46c9ab4d8fbbb8bfd1ff1a70d2</string>
+    <string name="client_secret">5dbaad300b114934bf62b5acaa780464</string>
+
+
     <!-- Notify string -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
