@@ -1,4 +1,4 @@
-package fanx.instag;
+package fanx.instag.activities;
 
 
 import android.app.Activity;
@@ -21,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import fanx.instag.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -105,6 +107,12 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_section1),
                         getString(R.string.title_section2),
                         getString(R.string.title_section3),
+                        getString(R.string.title_section4),
+                        getString(R.string.title_section5),
+                        getString(R.string.title_section6),
+                        getString(R.string.title_section7),
+                        getString(R.string.title_section8)
+
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -137,7 +145,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                R.drawable.ic_launcher,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -246,9 +254,20 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-        if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+        // Action bar reaction
+        // add
+        if (item.getItemId() == R.id.add) {
+            Toast.makeText(getActivity(), "Action: Take new photo", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        // add new album
+        if (item.getItemId() == R.id.add_album) {
+            Toast.makeText(getActivity(), "Action: add new album", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        // Share to others
+        if (item.getItemId() == R.id.share) {
+            Toast.makeText(getActivity(), "Action: Share", Toast.LENGTH_SHORT).show();
             return true;
         }
 

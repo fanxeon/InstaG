@@ -1,6 +1,5 @@
-package fanx.instag;
+package fanx.instag.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,13 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.os.Handler;
 
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.TextView;
+import fanx.instag.R;
 
 public class AppStart extends Activity {
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+    private final int SPLASH_DISPLAY_LENGTH = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +18,11 @@ public class AppStart extends Activity {
         setContentView(R.layout.activity_app_start);
 
         
-        // Hide action bar
+        // Splash screen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
+                /* Create an Intent that will start the Main Activity. */
                 Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
                 AppStart.this.startActivity(mainIntent);
                 AppStart.this.finish();

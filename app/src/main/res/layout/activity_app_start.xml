@@ -5,8 +5,9 @@
 
     <ImageView android:id="@+id/splashscreen" android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:src="@drawable/start_background2"
+        android:src="@drawable/welcome_screen"
         android:layout_gravity="center"/>
+
 
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
