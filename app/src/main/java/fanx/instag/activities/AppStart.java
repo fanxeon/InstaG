@@ -1,13 +1,19 @@
 package fanx.instag.activities;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.os.Handler;
+import android.widget.Toast;
+
+import fanx.instag.activities.InstagramSupportLibrary.InstagramApp;
 
 import fanx.instag.R;
+
 
 public class AppStart extends Activity {
     private final int SPLASH_DISPLAY_LENGTH = 2000;
@@ -17,15 +23,23 @@ public class AppStart extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_start);
 
-        
-        // Splash screen
+        // Splash screen for SPLASH_DISPLAY_LENGTH milliseconds
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                /* Create an Intent that will start the Main Activity. */
-                Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
-                AppStart.this.startActivity(mainIntent);
-                AppStart.this.finish();
+                if (!ApplicationData.mApp.hasAccessToken())
+                {
+                    ApplicationData.mApp = new InstagramApp(AppStart.this, ApplicationData.CLIENT_ID,
+                            ApplicationData.CLIENT_SECRET, ApplicationData.CALLBACK_URL);
+                    ApplicationData.mApp.setListener(listener);
+                    ApplicationData.mApp.authorize();
+                }
+                else
+                {
+                         /* Create an Intent that will start the Main Activity. */
+                    Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
+                    startActivity(mainIntent);
+                }
             }
         }, SPLASH_DISPLAY_LENGTH);
     }
@@ -51,4 +65,20 @@ public class AppStart extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    InstagramApp.OAuthAuthenticationListener listener = new InstagramApp.OAuthAuthenticationListener() {
+
+        @Override
+        public void onSuccess() {
+            //ApplicationData.mApp.getUserName());
+            /* Create an Intent that will start the Main Activity. */
+            Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
+            AppStart.this.startActivity(mainIntent);
+        }
+
+        @Override
+        public void onFail(String error) {
+            Toast.makeText(AppStart.this, error, Toast.LENGTH_SHORT).show();
+        }
+    };
 }
