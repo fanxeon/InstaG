@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import fanx.instag.R;
 
-public class profileActivity extends Activity {
+public class ProfileActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class profileActivity extends Activity {
         setContentView(R.layout.activity_a);
 
         TextView tv = new TextView(this);
-        tv.setText("This is E Activity!");
+        tv.setText("This is ProfileActivity!");
         tv.setGravity(Gravity.CENTER);
         setContentView(tv);
     }
