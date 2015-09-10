@@ -46,7 +46,7 @@
             android:label="@string/title_activity_d" >
         </activity>
         <activity
-            android:name=".activities.profileActivity"
+            android:name=".activities.ProfileActivity"
             android:label="@string/title_activity_e" >
         </activity>
 

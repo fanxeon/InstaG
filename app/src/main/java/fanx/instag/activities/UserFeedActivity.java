@@ -18,7 +18,7 @@ public class UserFeedActivity extends Activity {
         setContentView(R.layout.activity_a);
 
         TextView tv = new TextView(this);
-        tv.setText("This is A Activity!");
+        tv.setText("This is UserFeedActivity!");
         tv.setGravity(Gravity.CENTER);
         setContentView(tv);
     }

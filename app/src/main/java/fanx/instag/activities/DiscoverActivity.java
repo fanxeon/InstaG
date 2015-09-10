@@ -18,7 +18,7 @@ public class DiscoverActivity extends Activity {
         setContentView(R.layout.activity_a);
 
         TextView tv = new TextView(this);
-        tv.setText("This is B Activity!");
+        tv.setText("This is DiscoverActivity!");
         tv.setGravity(Gravity.CENTER);
         setContentView(tv);
     }

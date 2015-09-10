@@ -18,7 +18,7 @@ public class ActivityFeedActivity extends Activity {
         setContentView(R.layout.activity_a);
 
         TextView tv = new TextView(this);
-        tv.setText("This is D Activity!");
+        tv.setText("This is ActivityFeedActivity!");
         tv.setGravity(Gravity.CENTER);
         setContentView(tv);
     }

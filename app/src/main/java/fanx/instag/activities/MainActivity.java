@@ -41,9 +41,6 @@ public class MainActivity extends TabActivity
     private Intent mDIntent;
     private Intent mEIntent;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +60,7 @@ public class MainActivity extends TabActivity
         this.mBIntent = new Intent(this,DiscoverActivity.class);
         this.mCIntent = new Intent(this,UploadActivity.class);
         this.mDIntent = new Intent(this,ActivityFeedActivity.class);
-        this.mEIntent = new Intent(this,profileActivity.class);
+        this.mEIntent = new Intent(this,ProfileActivity.class);
 
         ((RadioButton) findViewById(R.id.radio_button0))
                 .setOnCheckedChangeListener(this);
@@ -156,9 +153,10 @@ public class MainActivity extends TabActivity
             restoreActionBar();
             return true;
         }*/
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
 
-
-        return super.onCreateOptionsMenu(menu);
+        //return super.onCreateOptionsMenu(menu);
     }
 
     @Override
