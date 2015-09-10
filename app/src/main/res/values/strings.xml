@@ -38,6 +38,23 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_searchable">SearchableActivity</string>
 
+    <!-- TAB BAR Use -->
+    <string name="hello">Hello World, MainTabActivity!</string>
+    <string name="usersFeed">Users</string>
+    <string name="discover">Discover</string>
+    <string name="upload">Upload</string>
+    <string name="activityFeed">Activity</string>
+    <string name="profile">Profile</string>
+
+    <string name="title_activity_a">AActivity</string>
+    <string name="title_activity_b">BActivity</string>
+    <string name="title_activity_c">CActivity</string>
+    <string name="title_activity_d">DActivity</string>
+    <string name="title_activity_e">EActivity</string>
+
+
+
+
     <!-- Further use -->
 
 

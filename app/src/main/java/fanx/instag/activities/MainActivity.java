@@ -5,18 +5,23 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.TabActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.TabHost;
 
 import fanx.instag.R;
 
-public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+public class MainActivity extends TabActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,CompoundButton.OnCheckedChangeListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -28,20 +33,83 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
+    // Tab bar variables
+    private TabHost mTabHost;
+    private Intent mAIntent;
+    private Intent mBIntent;
+    private Intent mCIntent;
+    private Intent mDIntent;
+    private Intent mEIntent;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.maintabs);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        //mNavigationDrawerFragment.setUp(
+        //        R.id.navigation_drawer,
+        //        (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // Set action bar tab
+        this.mAIntent = new Intent(this,UserFeedActivity.class);
+        this.mBIntent = new Intent(this,DiscoverActivity.class);
+        this.mCIntent = new Intent(this,UploadActivity.class);
+        this.mDIntent = new Intent(this,ActivityFeedActivity.class);
+        this.mEIntent = new Intent(this,profileActivity.class);
+
+        ((RadioButton) findViewById(R.id.radio_button0))
+                .setOnCheckedChangeListener(this);
+        ((RadioButton) findViewById(R.id.radio_button1))
+                .setOnCheckedChangeListener(this);
+        ((RadioButton) findViewById(R.id.radio_button2))
+                .setOnCheckedChangeListener(this);
+        ((RadioButton) findViewById(R.id.radio_button3))
+                .setOnCheckedChangeListener(this);
+        ((RadioButton) findViewById(R.id.radio_button4))
+                .setOnCheckedChangeListener(this);
+
+        setupIntent();
+
+
     }
+    // Tab bar supports functions
+    private void setupIntent() {
+        this.mTabHost = getTabHost();
+        TabHost localTabHost = this.mTabHost;
+
+        localTabHost.addTab(buildTabSpec("A_TAB", R.string.usersFeed,
+                R.drawable.icon_1_n, this.mAIntent));
+
+        localTabHost.addTab(buildTabSpec("B_TAB", R.string.discover,
+                R.drawable.icon_2_n, this.mBIntent));
+
+        localTabHost.addTab(buildTabSpec("C_TAB",
+                R.string.upload, R.drawable.icon_3_n,
+                this.mCIntent));
+
+        localTabHost.addTab(buildTabSpec("D_TAB", R.string.activityFeed,
+                R.drawable.icon_4_n, this.mDIntent));
+
+        localTabHost.addTab(buildTabSpec("MORE_TAB", R.string.profile,
+                R.drawable.icon_5_n, this.mEIntent));
+
+    }
+
+    private TabHost.TabSpec buildTabSpec(String tag, int resLabel, int resIcon,
+                                         final Intent content) {
+        return this.mTabHost.newTabSpec(tag).setIndicator(getString(resLabel),
+                getResources().getDrawable(resIcon)).setContent(content);
+    }
+
+    // Tab bar ends
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -79,6 +147,7 @@ public class MainActivity extends Activity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
@@ -86,7 +155,9 @@ public class MainActivity extends Activity
             getMenuInflater().inflate(R.menu.main, menu);
             restoreActionBar();
             return true;
-        }
+        }*/
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -103,6 +174,30 @@ public class MainActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        // Tab bar used
+        if(isChecked){
+            switch (buttonView.getId()) {
+                case R.id.radio_button0:
+                    this.mTabHost.setCurrentTabByTag("A_TAB");
+                    break;
+                case R.id.radio_button1:
+                    this.mTabHost.setCurrentTabByTag("B_TAB");
+                    break;
+                case R.id.radio_button2:
+                    this.mTabHost.setCurrentTabByTag("C_TAB");
+                    break;
+                case R.id.radio_button3:
+                    this.mTabHost.setCurrentTabByTag("D_TAB");
+                    break;
+                case R.id.radio_button4:
+                    this.mTabHost.setCurrentTabByTag("MORE_TAB");
+                    break;
+            }
+        }
     }
 
     /**
