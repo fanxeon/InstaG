@@ -27,17 +27,17 @@ public class AppStart extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!ApplicationData.mApp.hasAccessToken()) {
+                /*if (!ApplicationData.mApp.hasAccessToken()) {
                     ApplicationData.mApp = new InstagramApp(AppStart.this, ApplicationData.CLIENT_ID,
                             ApplicationData.CLIENT_SECRET, ApplicationData.CALLBACK_URL);
                     ApplicationData.mApp.setListener(listener);
                     ApplicationData.mApp.authorize();
-                } else {
+                } else {*/
                          /* Create an Intent that will start the Main Activity. */
                     Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
                     startActivity(mainIntent);
                 }
-            }
+            //}
         }, SPLASH_DISPLAY_LENGTH);
     }
 
