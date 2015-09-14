@@ -211,10 +211,6 @@ public class MainActivity extends TabActivity
         startActivityForResult(captureIntent, CAMERA_CAPTURE);
 
     }
-    // Get URI of media
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
 
     /** Create a File for saving an image or video */
     private static File getOutputMediaFile(int type){
@@ -254,7 +250,6 @@ public class MainActivity extends TabActivity
     final int CAMERA_CAPTURE = 1;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private List<String> listOfImagesPath = UploadActivity.listOfImagesPath;
-    public static GridView grid = UploadActivity.grid;
     public static final String GridViewDemo_ImagePath = UploadActivity.GridViewDemo_ImagePath;
 
     // On constriction - Fan
@@ -280,7 +275,7 @@ public class MainActivity extends TabActivity
                 listOfImagesPath = null;
                 listOfImagesPath = UploadActivity.RetriveCapturedImagePath();
                 if (listOfImagesPath != null) {
-                    grid.setAdapter(new UploadActivity.ImageListAdapter(this, listOfImagesPath));
+                    UploadActivity.grid.setAdapter(new UploadActivity.ImageListAdapter(this, listOfImagesPath));
                 }
 
             }

@@ -76,6 +76,10 @@
             android:label="@string/title_activity_individual"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <activity
+            android:name=".activities.ImageDetailActivity"
+            android:label="@string/title_activity_image_detail" >
+        </activity>
     </application>
 
 </manifest>

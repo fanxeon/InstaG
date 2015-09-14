@@ -18,8 +18,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -159,23 +161,36 @@ public class UploadActivity extends Activity implements OnClickListener {
 
     public static List<String> RetriveCapturedImagePath() {
         List<String> tFileList = new ArrayList<String>();
+        List<String> reverseFileList = new ArrayList<String>();
+        List<String> tmpList = new ArrayList<String>();
         File f = new File(GridViewDemo_ImagePath);
+
         if (f.exists()) {
             File[] files=f.listFiles();
             Arrays.sort(files);
 
-            for(int i=0; i<files.length; i++){
+            for(int i = 0; i < files.length; i ++){
                 File file = files[i];
                 if(file.isDirectory())
                     continue;
                 tFileList.add(file.getPath());
             }
         }
-        return tFileList;
+        // Copy original list
+        tmpList = tFileList;
+
+        @SuppressWarnings("rawtypes")
+        ListIterator myIterator = tmpList.listIterator(tmpList.size());
+
+        // Iterate in reverse direction
+        while (myIterator .hasPrevious()) {
+            reverseFileList.add((String) myIterator.previous());
+        }
+        // Keep the latest photo up
+        return reverseFileList;
     }
 
-    public static class ImageListAdapter extends BaseAdapter
-    {
+    public static class ImageListAdapter extends BaseAdapter {
         private Context context;
         private List<String> imgPic;
         public ImageListAdapter(Context c, List<String> thePic)        {
