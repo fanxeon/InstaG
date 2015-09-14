@@ -1,18 +1,43 @@
 package fanx.instag.activities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.io.File;
 
 import fanx.instag.R;
 
-public class ImageDetailActivity extends AppCompatActivity {
+public class ImageDetailActivity extends Activity {
+    ImageView imgView;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
+        // Recieve img from UploadActivity
+        //Intent i = getIntent();
+        //File f = i.getExtras().getParcelable("img");
+
+        String img = getIntent().getStringExtra("img");
+        imgView = (ImageView) findViewById(R.id.imageView);
+        imgView.setImageURI(Uri.parse(img));
+
+        //descrption - currently position and id
+        String position = getIntent().getStringExtra("position");
+        String id = getIntent().getStringExtra("id");
+        textView = (TextView) findViewById(R.id.imgDescription);
+        textView.setText("Position : " + position
+                + "| ID ： " +  id);
+
     }
 
     @Override

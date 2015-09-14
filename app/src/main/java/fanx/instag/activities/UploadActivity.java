@@ -1,13 +1,18 @@
 package fanx.instag.activities;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.database.Cursor;
+import android.media.Image;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,17 +52,28 @@ import android.widget.Toast;
 import fanx.instag.R;
 
 public class UploadActivity extends Activity implements OnClickListener {
-    // Declaration
+    // Declaration take photo
     Button captureBtn = null;
     final int CAMERA_CAPTURE = 1;
     private Uri picUri;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    // Grid view and image path
     public static GridView grid;
     public static  List<String> listOfImagesPath;
 
     public static final String GridViewDemo_ImagePath =
             Environment.getExternalStorageDirectory().getAbsolutePath() + "/GridViewDemo/";
 
+    // Individual view and animation effect
+    private Animator mCurrentAnimator;
+    private int mShortAnimationDuration; // Animation effect time
+    private int j = 0; // counter
+
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    private ImageView expandedImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +86,25 @@ public class UploadActivity extends Activity implements OnClickListener {
         listOfImagesPath = null;
         listOfImagesPath = RetriveCapturedImagePath();
         if(listOfImagesPath!=null){
-            grid.setAdapter(new ImageListAdapter(this,listOfImagesPath));
+            grid.setAdapter(new ImageListAdapter(this, listOfImagesPath));
+            // React on click items and zoom in
+            grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // test
+                    Toast.makeText(getApplicationContext(), "pos/id: " + position + id,
+                            Toast.LENGTH_LONG).show();
+
+                    // Jump to individual intent
+                    Intent individualIntent = new Intent(UploadActivity.this, ImageDetailActivity.class);
+                    individualIntent.putExtra("img", listOfImagesPath.get(position));
+                    // BUG here
+                    individualIntent.putExtra("position", listOfImagesPath.get(position));
+                    individualIntent.putExtra("id", id);
+                    startActivity(individualIntent);
+                }
+            });
+
         }
 
 
@@ -224,13 +258,18 @@ public class UploadActivity extends Activity implements OnClickListener {
             bfOptions.inTempStorage=new byte[32 * 1024];
             if (convertView == null) {
                 imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                imageView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
                 imageView.setPadding(0, 0, 0, 0);
+
             } else {
                 imageView = (ImageView) convertView;
+
             }
             FileInputStream fs = null;
             Bitmap bm;
+
+
             try {
                 fs = new FileInputStream(new File(imgPic.get(position).toString()));
 
@@ -240,9 +279,12 @@ public class UploadActivity extends Activity implements OnClickListener {
                     imageView.setId(position);
                     imageView.setLayoutParams(new GridView.LayoutParams(200, 160));
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
+
             } finally{
+
                 if(fs!=null) {
                     try {
                         fs.close();
@@ -254,4 +296,6 @@ public class UploadActivity extends Activity implements OnClickListener {
             return imageView;
         }
     }
+
+
 }
