@@ -204,15 +204,12 @@ public class MainActivity extends TabActivity
 
         return super.onOptionsItemSelected(item);
     }
-    // Camera functions
+    // Camera functions - Fan , Unused
     private void takePhoto() {
-        // create Intent to take a picture and return control to the calling application
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //we will handle the returned data in onActivityResult
+        startActivityForResult(captureIntent, CAMERA_CAPTURE);
 
-        // start the image capture Intent
-        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
     // Get URI of media
     private static Uri getOutputMediaFileUri(int type){
@@ -253,17 +250,14 @@ public class MainActivity extends TabActivity
         return mediaFile;
     }
 
-    Button captureBtn = null;
+    // Camera functions
     final int CAMERA_CAPTURE = 1;
-    private Uri picUri;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private GridView grid;
-    private List<String> listOfImagesPath;
+    private List<String> listOfImagesPath = UploadActivity.listOfImagesPath;
+    public static GridView grid = UploadActivity.grid;
+    public static final String GridViewDemo_ImagePath = UploadActivity.GridViewDemo_ImagePath;
 
-    public static final String GridViewDemo_ImagePath =
-            Environment.getExternalStorageDirectory().getAbsolutePath() + "/GridViewDemo/";
-
-    // On constriction
+    // On constriction - Fan
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             //user is returning from capturing an image using the camera

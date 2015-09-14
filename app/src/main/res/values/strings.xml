@@ -52,6 +52,10 @@
     <string name="title_activity_d">DActivity</string>
     <string name="title_activity_e">EActivity</string>
 
+    <string name="title_activity_individual">IndividualActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 
 
 

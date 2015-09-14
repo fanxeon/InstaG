@@ -50,8 +50,8 @@ public class UploadActivity extends Activity implements OnClickListener {
     final int CAMERA_CAPTURE = 1;
     private Uri picUri;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private GridView grid;
-    private  List<String> listOfImagesPath;
+    public static GridView grid;
+    public static  List<String> listOfImagesPath;
 
     public static final String GridViewDemo_ImagePath =
             Environment.getExternalStorageDirectory().getAbsolutePath() + "/GridViewDemo/";
@@ -70,6 +70,8 @@ public class UploadActivity extends Activity implements OnClickListener {
         if(listOfImagesPath!=null){
             grid.setAdapter(new ImageListAdapter(this,listOfImagesPath));
         }
+
+
     }
     @Override
     public void onClick(View arg0) {
