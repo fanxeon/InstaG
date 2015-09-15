@@ -42,15 +42,16 @@ import android.content.SharedPreferences.Editor;
 /**
  * Created by SShrestha on 7/09/2015.
  */
-public class InstagramSupportLibrary {
-
+public class InstagramSupportLibrary
+{
     /**
      *
      * @author Thiago Locatelli <thiago.locatelli@gmail.com>
      * @author Lorensius W. L T <lorenz@londatiga.net>
      *
      */
-    public static class InstagramApp {
+    public static class InstagramApp
+    {
 
         private InstagramSession mSession;
         private InstagramDialog mDialog;
@@ -106,7 +107,7 @@ public class InstagramSupportLibrary {
 
                 @Override
                 public void onError(String error) {
-                    mListener.onFail("Authorization failed");
+                    mListener.onFail(error.toString());
                 }
             };
 
@@ -134,10 +135,10 @@ public class InstagramSupportLibrary {
                         urlConnection.setDoOutput(true);
                         //urlConnection.connect();
                         OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
-                        writer.write("client_id="+mClientId+
-                                "&client_secret="+mClientSecret+
+                        writer.write("client_id=" + mClientId +
+                                "&client_secret=" + mClientSecret +
                                 "&grant_type=authorization_code" +
-                                "&redirect_uri="+mCallbackUrl+
+                                "&redirect_uri=" + mCallbackUrl +
                                 "&code=" + code);
                         writer.flush();
                         String response = streamToString(urlConnection.getInputStream());
@@ -240,6 +241,10 @@ public class InstagramSupportLibrary {
             return mSession.getName();
         }
 
+        public String getmAccessToken() {
+            return hasAccessToken()? null: mAccessToken;
+        }
+
         public void authorize() {
             //Intent webAuthIntent = new Intent(Intent.ACTION_VIEW);
             //webAuthIntent.setData(Uri.parse(AUTH_URL));
@@ -280,6 +285,11 @@ public class InstagramSupportLibrary {
             }
         }
 
+        public String getAccessToken()
+        {
+            return mSession.getAccessToken();
+        }
+
         public interface OAuthAuthenticationListener {
             public abstract void onSuccess();
 
@@ -297,7 +307,7 @@ public class InstagramSupportLibrary {
     public static  class InstagramDialog extends Dialog {
 
         static final float[] DIMENSIONS_LANDSCAPE = { 460, 260 };
-        static final float[] DIMENSIONS_PORTRAIT = { 280, 420 };
+        static final float[] DIMENSIONS_PORTRAIT = { 282, 420 };
         static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.FILL_PARENT);
