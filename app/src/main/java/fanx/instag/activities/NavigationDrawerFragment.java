@@ -205,7 +205,7 @@ public class NavigationDrawerFragment extends Fragment {
         //Sandip Shrestha
 
         if(position == 7) {
-            ApplicationData.mApp.resetAccessToken();
+            //ApplicationData.mApp.resetAccessToken();
             Log.e("Action", "Logged off Successfully");
             Intent intent = new Intent(getActivity(), AppStart.class);
             startActivity(intent);

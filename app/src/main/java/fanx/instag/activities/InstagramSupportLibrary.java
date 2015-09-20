@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import android.app.ProgressDialog;
@@ -52,13 +56,12 @@ public class InstagramSupportLibrary
      */
     public static class InstagramApp
     {
-
         private InstagramSession mSession;
         private InstagramDialog mDialog;
         private OAuthAuthenticationListener mListener;
         private ProgressDialog mProgress;
         private String mAuthUrl;
-        private String mTokenUrl;
+        //private String mTokenUrl;
         private String mAccessToken;
         private Context mCtx;
 
@@ -70,10 +73,6 @@ public class InstagramSupportLibrary
         private static int WHAT_ERROR = 1;
         private static int WHAT_FETCH_INFO = 2;
 
-        /**
-         * Callback url, as set in 'Manage OAuth Costumers' page
-         * (https://developer.github.com/)
-         */
 
         public static String mCallbackUrl = "";
         private static final String AUTH_URL = "https://api.instagram.com/oauth/authorize/";
@@ -81,9 +80,6 @@ public class InstagramSupportLibrary
         private static final String API_URL = "https://api.instagram.com/v1";
 
         private static final String TAG = "InstagramAPI";
-
-        public InstagramApp()
-        {}
 
         public InstagramApp(Context context, String clientId, String clientSecret,
                             String callbackUrl) {
@@ -94,8 +90,7 @@ public class InstagramSupportLibrary
             mSession = new InstagramSession(context);
             mAccessToken = mSession.getAccessToken();
             mCallbackUrl = callbackUrl;
-            mTokenUrl = TOKEN_URL + "?client_id=" + clientId + "&client_secret="
-                    + clientSecret + "&redirect_uri=" + mCallbackUrl + "&grant_type=authorization_code";
+            //mTokenUrl = TOKEN_URL + "?client_id=" + clientId + "&client_secret="+ clientSecret + "&redirect_uri=" + mCallbackUrl + "&grant_type=authorization_code";
             mAuthUrl = AUTH_URL + "?client_id=" + clientId + "&redirect_uri="
                     + mCallbackUrl + "&response_type=code&display=touch&scope=likes+comments+relationships";
 
@@ -141,7 +136,7 @@ public class InstagramSupportLibrary
                                 "&redirect_uri=" + mCallbackUrl +
                                 "&code=" + code);
                         writer.flush();
-                        String response = streamToString(urlConnection.getInputStream());
+                        String response = AppData.streamToString(urlConnection.getInputStream());
                         Log.i(TAG, "response " + response);
                         JSONObject jsonObj = (JSONObject) new JSONTokener(response).nextValue();
 
@@ -181,7 +176,7 @@ public class InstagramSupportLibrary
                         urlConnection.setRequestMethod("GET");
                         urlConnection.setDoInput(true);
                         urlConnection.connect();
-                        String response = streamToString(urlConnection.getInputStream());
+                        String response = AppData.streamToString(urlConnection.getInputStream());
                         System.out.println(response);
                         JSONObject jsonObj = (JSONObject) new JSONTokener(response).nextValue();
                         String name = jsonObj.getJSONObject("data").getString("full_name");
@@ -241,41 +236,11 @@ public class InstagramSupportLibrary
             return mSession.getName();
         }
 
-        public String getmAccessToken() {
-            return hasAccessToken()? null: mAccessToken;
-        }
-
         public void authorize() {
             //Intent webAuthIntent = new Intent(Intent.ACTION_VIEW);
             //webAuthIntent.setData(Uri.parse(AUTH_URL));
             //mCtx.startActivity(webAuthIntent);
             mDialog.show();
-        }
-
-        private String streamToString(InputStream is) throws IOException {
-            String str = "";
-
-            if (is != null) {
-                StringBuilder sb = new StringBuilder();
-                String line;
-
-                try {
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(is));
-
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                    }
-
-                    reader.close();
-                } finally {
-                    is.close();
-                }
-
-                str = sb.toString();
-            }
-
-            return str;
         }
 
         public void resetAccessToken() {
@@ -304,7 +269,7 @@ public class InstagramSupportLibrary
      * @author Lorensius W. L T <lorenz@londatiga.net>
      *
      */
-    public static  class InstagramDialog extends Dialog {
+    public static class InstagramDialog extends Dialog {
 
         static final float[] DIMENSIONS_LANDSCAPE = { 460, 260 };
         static final float[] DIMENSIONS_PORTRAIT = { 282, 420 };
@@ -444,13 +409,12 @@ public class InstagramSupportLibrary
         private SharedPreferences sharedPref;
         private Editor editor;
 
-        private static final String SHARED = "Instagram_Preferences";
-        private static final String API_USERNAME = "username";
-        private static final String API_ID = "id";
-        private static final String API_NAME = "name";
-        private static final String API_ACCESS_TOKEN = "access_token";
-        private static final String PROFILE_PICTURE = "profile_picture";
-
+        private final String SHARED = "Instagram_Preferences";
+        private final String API_USERNAME = "username";
+        private final String API_ID = "id";
+        private final String API_NAME = "name";
+        private final String API_ACCESS_TOKEN = "access_token";
+        private final String PROFILE_PICTURE = "profile_picture";
 
         public InstagramSession(Context context) {
             sharedPref = context.getSharedPreferences(SHARED, Context.MODE_PRIVATE);
@@ -533,8 +497,11 @@ public class InstagramSupportLibrary
             return sharedPref.getString(API_ACCESS_TOKEN, null);
         }
 
-
+        public boolean hasAccessToken() {
+            return (getAccessToken() == null) ? false : true;
+        }
 
     }
+
 
 }

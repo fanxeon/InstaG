@@ -20,38 +20,38 @@ import fanx.instag.R;
 
 public class AppStart extends Activity {
     private final int SPLASH_DISPLAY_LENGTH = 1000;
-    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_start);
-        sharedPref = getApplicationContext().getSharedPreferences("Instagram_Preferences", Context.MODE_PRIVATE);
+
         // Splash screen for SPLASH_DISPLAY_LENGTH milliseconds
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run()
             {
+                AppData mAppData = new AppData();
                 try
                 {
-                    if (sharedPref.getString("access_token", null) != null) {
+                    if (mAppData.hasAccessToken(AppStart.this)) {
+                        //Hi Xuan not sure why this part is not working
                         //Create an Intent that will start the Main Activity.
-                        Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
-                        startActivity(mainIntent);
-                        Log.e("Try: ", sharedPref.getString("access_token", null));
+                        //Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
+                        //startActivity(mainIntent);
+                        //This is example call for for Search User and Profile
+                        //mAppData.searchUser(AppStart.this, "sandip", 3);
+                        //mAppData.getUserProfile(AppStart.this);
                     }
                     else
                     {
-                        ApplicationData.mApp = new InstagramApp(AppStart.this, ApplicationData.CLIENT_ID, ApplicationData.CLIENT_SECRET, ApplicationData.CALLBACK_URL);
-                        ApplicationData.mApp.setListener(listener);
-                        ApplicationData.mApp.authorize();
+                        mAppData.getAuthenticated(AppStart.this, listener);
                     }
                 }
                 catch (NullPointerException ne)
                 {
 
                 }
-
 
             }
         }, SPLASH_DISPLAY_LENGTH);
@@ -83,7 +83,6 @@ public class AppStart extends Activity {
 
         @Override
         public void onSuccess() {
-            //ApplicationData.mApp.getUserName());
             /* Create an Intent that will start the Main Activity. */
             Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
             AppStart.this.startActivity(mainIntent);
