@@ -81,9 +81,8 @@
             android:label="@string/title_activity_image_detail" >
         </activity>
         <activity android:name=".activities.CameraActivity"
-            android:label="Camera">
-
-            <!-- android:screenOrientation="landscape"> -->
+            android:label="Camera"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 
