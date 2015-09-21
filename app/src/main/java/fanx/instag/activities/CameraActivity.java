@@ -47,10 +47,12 @@ public class CameraActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        // Hide actionbar
+        getActionBar().hide();
 
         mCamera = getCameraInstance();
 
-        // 创建预览类，并与Camera关联，最后添加到界面布局中
+        // Create a preview class
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
