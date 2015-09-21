@@ -256,6 +256,7 @@ public class MainActivity extends TabActivity
     private List<String> listOfImagesPath = UploadActivity.listOfImagesPath;
     public static final String GridViewDemo_ImagePath = UploadActivity.GridViewDemo_ImagePath;
 
+    /*
     // On constriction - Fan
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {

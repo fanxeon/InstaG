@@ -2,7 +2,11 @@ package fanx.instag.activities;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+
+
+import android.graphics.Camera;
 import android.media.Image;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +58,7 @@ import fanx.instag.R;
 public class UploadActivity extends Activity implements OnClickListener {
     // Declaration take photo
     Button captureBtn = null;
+    Button captureBtn2 = null;
     final int CAMERA_CAPTURE = 1;
     private Uri picUri;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -81,7 +86,11 @@ public class UploadActivity extends Activity implements OnClickListener {
         setContentView(R.layout.activity_c);
         captureBtn = (Button)findViewById(R.id.capture_btn1);
         captureBtn.setOnClickListener(this);
-        grid = ( GridView) findViewById(R.id.gridviewimg);
+        //NEW
+        captureBtn2 = (Button)findViewById(R.id.capture_btn2);
+        captureBtn2.setOnClickListener(this);
+        // Grid view
+        grid = (GridView) findViewById(R.id.gridviewimg);
 
         listOfImagesPath = null;
         listOfImagesPath = RetriveCapturedImagePath();
@@ -115,10 +124,24 @@ public class UploadActivity extends Activity implements OnClickListener {
         if (arg0.getId() == R.id.capture_btn1) {
 
             try {
+
                 //use standard intent to capture an image
                 Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 //we will handle the returned data in onActivityResult
                 startActivityForResult(captureIntent, CAMERA_CAPTURE);
+
+
+            } catch (ActivityNotFoundException anfe) {
+                //display an error message
+                String errorMessage = "Whoops - your device doesn't support capturing images!";
+                Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        // Test Custom Camera
+        }else if (arg0.getId() == R.id.capture_btn2) {
+
+            try {
+                customCamera();
             } catch (ActivityNotFoundException anfe) {
                 //display an error message
                 String errorMessage = "Whoops - your device doesn't support capturing images!";
@@ -145,7 +168,8 @@ public class UploadActivity extends Activity implements OnClickListener {
         //noinspection SimplifiableIfStatement
         if (id == R.id.add){
             // Click on action bar take pic
-            takePicture();
+            //takePicture();
+            customCamera();
             return true;
         }
         else if (id == R.id.action_settings) {
@@ -155,13 +179,16 @@ public class UploadActivity extends Activity implements OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    private void customCamera() {
+        Intent CameraIntent = new Intent(UploadActivity.this, CameraActivity.class);
+        startActivityForResult(CameraIntent,CAMERA_CAPTURE);
+
+    }
+
     // On construction
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
-    private void takePicture() {
-        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
-        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
-        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
-    }
+
+
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
