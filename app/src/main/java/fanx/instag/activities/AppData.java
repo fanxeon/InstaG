@@ -2,7 +2,11 @@ package fanx.instag.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -214,6 +218,105 @@ public class AppData {
     public String getUserId(Context c){
         SharedPreferences s = c.getSharedPreferences(SHARED, Context.MODE_PRIVATE);
         return s.getString("id",null);
+    }
+
+    /*
+    //Using AsyncTask (The constructor takes ImageView and URL string as parameter and sets the image )
+    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
+
+        private String url;
+        private ImageView imageView;
+
+        public ImageLoadTask(String url, ImageView imageView) {
+            this.url = url;
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            try {
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection
+                        .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            imageView.setImageBitmap(result);
+        }
+
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            Log.e("src",src);
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
+        }
+    }
+    */
+
+    public static class APICallForData extends AsyncTask<Void, Void, String> {
+
+        private String url;
+        private String returnData;
+
+        public APICallForData(String url, Context c) {
+            this.url = "https://api.instagram.com/v1"+url;
+            Log.e("URL", this.url+"2");
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String result = null;
+            try {
+                Log.e("URL", url+"3");
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                result = streamToString(input);
+                //Log.e("Data", streamToString(input));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.e("Result", result);
+            this.returnData = result;
+        }
+
+        public String getData()
+        {
+            while (this.returnData == null);
+            return returnData;
+        }
     }
 }
 
