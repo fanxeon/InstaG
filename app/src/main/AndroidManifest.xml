@@ -84,6 +84,8 @@
             android:label="Camera"
             android:screenOrientation="landscape">
         </activity>
+
+        <uses-library android:name="com.google.android.maps" />
     </application>
 
 </manifest>

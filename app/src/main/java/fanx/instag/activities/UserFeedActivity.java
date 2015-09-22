@@ -3,6 +3,7 @@ package fanx.instag.activities;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,5 +44,36 @@ public class UserFeedActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void onStart() {
+        super.onStart();  // Always call the superclass method first
+        // The activity is either being restarted or started for the first time
+        Log.e("UserFeedActivity", "onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        // Activity being restarted from stopped state
+        Log.e("UserFeedActivity", "onRestart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("UserFeedActivity", "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("UserFeedActivity", "onResume");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("UserFeedActivity", "onStop");
     }
 }

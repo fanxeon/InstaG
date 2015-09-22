@@ -29,27 +29,22 @@ public class AppStart extends Activity {
         // Splash screen for SPLASH_DISPLAY_LENGTH milliseconds
         new Handler().postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 AppData mAppData = new AppData();
-                try
-                {
+                try {
                     if (mAppData.hasAccessToken(AppStart.this)) {
                         //Hi Xuan not sure why this part is not working
                         //Create an Intent that will start the Main Activity.
+
                         Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
                         startActivity(mainIntent);
-                        //This is example call for for Search User and Profile
-                        mAppData.searchUser(AppStart.this, "sandip", 3);
-                        mAppData.getUserProfile(AppStart.this);
-            }
-            else
-            {
-                mAppData.getAuthenticated(AppStart.this, listener);
-            }
-        }
-                catch (NullPointerException ne)
-                {
+
+                        //This is example call for for Search User
+                        //mAppData.searchUser(AppStart.this, "sandip", 3);
+                    } else {
+                        mAppData.getAuthenticated(AppStart.this, listener);
+                    }
+                } catch (NullPointerException ne) {
 
                 }
 
@@ -97,15 +92,15 @@ public class AppStart extends Activity {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
+        Log.e("AppStart", "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();  // Always call the superclass method first
-
         // Release the Camera because we don't need it when paused
         // and other activities might need to use it.
-        System.out.println("On Pause Called");
+        Log.e("AppStart", "onPause");
         //Toast.makeText(GridActivity.this, "On Pause Called", Toast.LENGTH_LONG).show();
     }
 
@@ -114,5 +109,20 @@ public class AppStart extends Activity {
         super.onStop();  // Always call the superclass method first
         // Save the note's current draft, because the activity is stopping
         // and we want to be sure the current note progress isn't lost.
+        Log.e("AppStart", "onStop");
     }
+
+    protected void onStart() {
+        super.onStart();  // Always call the superclass method first
+        // The activity is either being restarted or started for the first time
+        Log.e("AppStart", "onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        // Activity being restarted from stopped state
+        Log.e("AppStart", "onRestart");
+    }
+
 }

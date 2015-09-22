@@ -378,6 +378,39 @@ public class MainActivity extends TabActivity
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
+
+    }
+
+    protected void onStart() {
+        super.onStart();  // Always call the superclass method first
+        // The activity is either being restarted or started for the first time
+        Log.e("MainActivity", "onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        // Activity being restarted from stopped state
+        Log.e("MainActivity", "onRestart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("MainActivity", "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("MainActivity", "onResume");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("MainActivity", "onStop");
     }
 
 }

@@ -279,25 +279,22 @@ public class AppData {
     public static class APICallForData extends AsyncTask<Void, Void, String> {
 
         private String url;
-        private String returnData;
-
+        private String data;
         public APICallForData(String url, Context c) {
             this.url = "https://api.instagram.com/v1"+url;
-            Log.e("URL", this.url+"2");
         }
 
         @Override
         protected String doInBackground(Void... params) {
             String result = null;
             try {
-                Log.e("URL", url+"3");
+
                 URL urlConnection = new URL(url);
                 HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 result = streamToString(input);
-                //Log.e("Data", streamToString(input));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -308,15 +305,9 @@ public class AppData {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.e("Result", result);
-            this.returnData = result;
+            data = result;
         }
 
-        public String getData()
-        {
-            while (this.returnData == null);
-            return returnData;
-        }
     }
 }
 

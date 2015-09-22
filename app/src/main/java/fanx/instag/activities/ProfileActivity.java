@@ -22,13 +22,16 @@ import fanx.instag.R;
 public class ProfileActivity extends Activity {
 
     boolean imageLoadStatus = false;
+    AppData mAppData;
+    UserProfile u;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_a);
 
-        AppData mAppData = new AppData();
-        UserProfile u = mAppData.getUserProfile(this);
+        mAppData = new AppData();
+        u = mAppData.getUserProfile(this);
 
         ((TextView)findViewById(R.id.full_name)).setText(u.full_name);
         ((TextView)findViewById(R.id.label_username)).setText(u.username);
@@ -56,9 +59,10 @@ public class ProfileActivity extends Activity {
         while (!imageLoadStatus);
 
 
-        String url = "/users/"+mAppData.getUserId(this)+"/media/recent/?access_token="+mAppData.getAccessToken(this)+"&count=20";
-        Log.e("URL", url+"1");
-        APICallForData r =  new APICallForData(url,this);
+        String url = "/users/"+mAppData.getUserId(ProfileActivity.this)+"/media/recent/?access_token="+mAppData.getAccessToken(ProfileActivity.this)+"&count=20";
+        APICallForData r =  new APICallForData(url,ProfileActivity.this);
+        r.execute();
+        //Log.e("Expected Data", r.getData());
 
     }
 
@@ -84,5 +88,34 @@ public class ProfileActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //@Override
+    protected void onStart() {
+        super.onStart();  // Always call the superclass method first
+        // The activity is either being restarted or started for the first time
+        Log.e("Profile", "onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        // Activity being restarted from stopped state
+        Log.e("Profile", "onRestart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("Profile", "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("Profile", "onResume");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("Profile", "onStop");
+    }
 }
