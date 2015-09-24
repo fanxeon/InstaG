@@ -19,8 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import fanx.instag.activities.InstagramSupportLibrary.InstagramApp;
-import fanx.instag.activities.InstagramSupportLibrary.InstagramApp.OAuthAuthenticationListener;
 /**
  * Created by SShrestha on 7/09/2015.
  */
@@ -207,13 +205,6 @@ public class AppData {
             return false;
     }
 
-    public void getAuthenticated(Context c, OAuthAuthenticationListener l)
-    {
-        /*Instance of un/authenticated instagram object*/
-        InstagramApp mApp = new InstagramApp(c, CLIENT_ID, CLIENT_SECRET, CALLBACK_URL);
-        mApp.setListener(l);
-        mApp.authorize();
-    }
 
     public String getUserId(Context c){
         SharedPreferences s = c.getSharedPreferences(SHARED, Context.MODE_PRIVATE);

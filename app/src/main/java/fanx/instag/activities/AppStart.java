@@ -13,9 +13,9 @@ import android.view.MenuItem;
 import android.os.Handler;
 import android.widget.Toast;
 
-import fanx.instag.activities.InstagramSupportLibrary.InstagramApp;
 
 import fanx.instag.R;
+import fanx.instag.activities.util.InstagramSession;
 
 
 public class AppStart extends Activity {
@@ -30,9 +30,9 @@ public class AppStart extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                AppData mAppData = new AppData();
+                InstagramSession i =new InstagramSession(AppStart.this);
                 try {
-                    if (mAppData.hasAccessToken(AppStart.this)) {
+                    if (i.hasAccessToken()) {
                         //Hi Xuan not sure why this part is not working
                         //Create an Intent that will start the Main Activity.
 
@@ -42,7 +42,10 @@ public class AppStart extends Activity {
                         //This is example call for for Search User
                         //mAppData.searchUser(AppStart.this, "sandip", 3);
                     } else {
-                        mAppData.getAuthenticated(AppStart.this, listener);
+                        //i.getAuthenticated(AppStart.this, listener);
+                        Intent loginIntent = new Intent(AppStart.this, LoginActivity.class);
+                        startActivity(loginIntent);
+
                     }
                 } catch (NullPointerException ne) {
 
@@ -74,20 +77,6 @@ public class AppStart extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    InstagramApp.OAuthAuthenticationListener listener = new InstagramApp.OAuthAuthenticationListener() {
-
-        @Override
-        public void onSuccess() {
-            /* Create an Intent that will start the Main Activity. */
-            Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
-            AppStart.this.startActivity(mainIntent);
-        }
-
-        @Override
-        public void onFail(String error) {
-            Toast.makeText(AppStart.this, error, Toast.LENGTH_SHORT).show();
-        }
-    };
 
     @Override
     public void onResume() {
