@@ -35,14 +35,16 @@ public class AppStart extends Activity {
                     if (i.hasAccessToken()) {
                         //Hi Xuan not sure why this part is not working
                         //Create an Intent that will start the Main Activity.
-
+                        Toast.makeText(AppStart.this, "Redirecting to MainActivity ...", Toast.LENGTH_LONG);
                         Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
                         startActivity(mainIntent);
 
                         //This is example call for for Search User
                         //mAppData.searchUser(AppStart.this, "sandip", 3);
-                    } else {
+                    }
+                    else {
                         //i.getAuthenticated(AppStart.this, listener);
+                        Toast.makeText(AppStart.this, "Please login using instagram account.", Toast.LENGTH_LONG);
                         Intent loginIntent = new Intent(AppStart.this, LoginActivity.class);
                         startActivity(loginIntent);
 
