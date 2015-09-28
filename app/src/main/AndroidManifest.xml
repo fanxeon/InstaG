@@ -43,20 +43,12 @@
             android:label="@string/title_activity_a" >
         </activity>
         <activity
-            android:name=".activities.DiscoverActivity"
-            android:label="@string/title_activity_b" >
-        </activity>
-        <activity
             android:name=".activities.UploadActivity"
             android:label="@string/title_activity_c" >
         </activity>
         <activity
             android:name=".activities.ActivityFeedActivity"
             android:label="@string/title_activity_d" >
-        </activity>
-        <activity
-            android:name=".activities.ProfileActivity"
-            android:label="@string/title_activity_e" >
         </activity>
 
         <!-- Search Activity -->
@@ -91,7 +83,26 @@
 
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="Login" >
+        </activity>
+        <activity
+            android:name=".activities.SearchUserActivity"
+            android:label="@string/title_activity_search_user" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <!--
+                meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/
+            -->
+        </activity>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile" >
+        </activity>
+        <activity
+            android:name=".activities.DiscoverActivity"
+            android:label="@string/title_activity_discover" >
         </activity>
     </application>
 

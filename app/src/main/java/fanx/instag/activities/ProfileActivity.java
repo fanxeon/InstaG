@@ -1,26 +1,21 @@
 package fanx.instag.activities;
 
 import android.app.Activity;
-
 import android.os.Bundle;
 import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import fanx.instag.R;
 import fanx.instag.activities.util.InstagramCurrentUserProfile;
 
 public class ProfileActivity extends Activity {
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_a);
+        setContentView(R.layout.activity_profile);
         //Sandip Shrestha
         TextView full_name =  ((TextView) findViewById(R.id.full_name));
         TextView username = ((TextView)findViewById(R.id.username));

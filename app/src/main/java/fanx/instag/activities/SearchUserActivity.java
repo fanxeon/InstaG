@@ -1,31 +1,25 @@
 package fanx.instag.activities;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Paint;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import fanx.instag.R;
 
-public class DiscoverActivity extends Activity {
+public class SearchUserActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discover);
-        TextView searchUser = (TextView)findViewById(R.id.searchUser);
-        searchUser.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);;
+        setContentView(R.layout.activity_search_user);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_discover, menu);
+        getMenuInflater().inflate(R.menu.menu_search_user, menu);
         return true;
     }
 
@@ -42,19 +36,5 @@ public class DiscoverActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void getSearchUserActivity(View view)
-    {
-        Intent intent =  new Intent(this, SearchUserActivity.class);
-        Log.e("getSearchUserActivity", "Search User Activity is being loaded..");
-        startActivity(intent);
-    }
-
-    public void getMainActivity(View view)
-    {
-        Intent intent =  new Intent(this, MainActivity.class);
-        Log.e("getMainActivity", "Main Activity is being loaded..");
-        startActivity(intent);
     }
 }
