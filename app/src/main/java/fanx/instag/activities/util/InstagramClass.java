@@ -84,7 +84,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
             // 3. Request Access Token.
             if (code != null) {
                 this.getAccessToken(code);
-
             }
             else {
                 currentActivity.runOnUiThread(new Runnable() {
@@ -92,8 +91,8 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
                         Toast.makeText(currentActivity, "Invalid Username/Password", Toast.LENGTH_SHORT).show();
                     }
                 });
+                return false;
 
-                currentActivity.startActivity(currentActivity.getIntent());
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -107,10 +106,15 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
         if (result)
         {
             //Context c = currentActivity.getApplicationContext();
-            Log.e("InstagramClass", "onPostExecute");
+
             if (result) {
+                Log.e("InstagramClass", "Starting Main Activity");
                 Intent loginIntent = new Intent(nextIntent);
                 currentActivity.startActivity(loginIntent);
+            }
+            else {
+                Log.e("InstagramClass", "Restarting Login Intent");
+                currentActivity.startActivity(currentActivity.getIntent());
             }
 
         }

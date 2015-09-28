@@ -4,8 +4,12 @@ package fanx.instag.activities.util;
  * Created by SShrestha on 25/09/2015.
  */
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+
+import fanx.instag.activities.LoginActivity;
 
 /**
  * Created by SShrestha on 25/09/2015.
@@ -52,13 +56,15 @@ public class InstagramSession {
     /**
      * Reset access token and user name
      */
-    public void resetAccessToken() {
+    public void resetAccessToken(Activity a) {
         editor.putString(API_ID, null);
         editor.putString(API_NAME, null);
         editor.putString(API_ACCESS_TOKEN, null);
         editor.putString(API_USERNAME, null);
         editor.putString(PROFILE_PICTURE, null);
         editor.commit();
+        Intent intent = new Intent(a, LoginActivity.class);
+        a.startActivity(intent);
     }
 
     /**

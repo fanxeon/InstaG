@@ -36,6 +36,7 @@ public class AppStart extends Activity {
                         //Hi Xuan not sure why this part is not working
                         //Create an Intent that will start the Main Activity.
                         Toast.makeText(AppStart.this, "Redirecting to MainActivity ...", Toast.LENGTH_LONG);
+                        Log.e("AppStart", "Main Activity");
                         Intent mainIntent = new Intent(AppStart.this, MainActivity.class);
                         startActivity(mainIntent);
 
@@ -45,6 +46,7 @@ public class AppStart extends Activity {
                     else {
                         //i.getAuthenticated(AppStart.this, listener);
                         Toast.makeText(AppStart.this, "Please login using instagram account.", Toast.LENGTH_LONG);
+                        Log.e("AppStart", "Login Request");
                         Intent loginIntent = new Intent(AppStart.this, LoginActivity.class);
                         startActivity(loginIntent);
 

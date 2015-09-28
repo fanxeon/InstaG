@@ -1,8 +1,10 @@
 package fanx.instag.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -103,6 +106,25 @@ public class AppData {
         }
 
         return str;
+    }
+
+    public static void createInstagramIntent(String type, String mediaPath, Context context){
+
+        // Create the new Intent using the 'Send' action.
+        Intent share = new Intent(Intent.ACTION_SEND);
+
+        // Set the MIME type
+        share.setType(type);
+
+        // Create the URI from the media
+        File media = new File(mediaPath);
+        Uri uri = Uri.fromFile(media);
+
+        // Add the URI to the Intent.
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+
+        // Broadcast the Intent.
+        context.startActivity(Intent.createChooser(share, "Share to"));
     }
 
     public class UserData

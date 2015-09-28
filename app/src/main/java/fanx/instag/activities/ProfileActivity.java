@@ -2,8 +2,6 @@ package fanx.instag.activities;
 
 import android.app.Activity;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,8 +12,6 @@ import android.widget.TextView;
 
 
 import fanx.instag.R;
-import fanx.instag.activities.util.APIData;
-import fanx.instag.activities.util.InstagramAPICall;
 import fanx.instag.activities.util.InstagramCurrentUserProfile;
 
 public class ProfileActivity extends Activity {

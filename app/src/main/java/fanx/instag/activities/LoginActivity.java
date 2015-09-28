@@ -31,12 +31,12 @@ public class LoginActivity extends Activity {
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Username: " + username.getText() + "\n" + "Password: " + password.getText(), Toast.LENGTH_SHORT).show();
-
                 try {
                     //Log.e("HTML: ", submittingForm());
                     Intent nextIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    InstagramClass i = new InstagramClass(LoginActivity.this, username.getText().toString(), password.getText().toString(), nextIntent);
+                    String param_username =  username.getText().toString();
+                    String param_password = password.getText().toString();
+                    InstagramClass i = new InstagramClass(LoginActivity.this, param_username, param_password, nextIntent);
                     i.execute();
 
                 } catch (Exception e) {

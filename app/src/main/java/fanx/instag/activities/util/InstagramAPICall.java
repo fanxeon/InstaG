@@ -3,9 +3,6 @@ package fanx.instag.activities.util;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -18,7 +15,6 @@ import fanx.instag.activities.AppData;
 
 public class InstagramAPICall extends AsyncTask<Void, Void, String> {
     String url;
-    //APIData apiData = new APIData();
 
     public InstagramAPICall(String url) {
         this.url = "https://api.instagram.com/v1"+url;

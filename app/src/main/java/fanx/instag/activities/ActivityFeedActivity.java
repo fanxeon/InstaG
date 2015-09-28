@@ -2,17 +2,17 @@ package fanx.instag.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+
+import java.io.File;
 
 import fanx.instag.R;
-import fanx.instag.activities.util.APIData;
 import fanx.instag.activities.util.InstagramAPICall;
 
 public class ActivityFeedActivity extends Activity {
@@ -24,12 +24,14 @@ public class ActivityFeedActivity extends Activity {
 
         SharedPreferences s = this.getSharedPreferences("Instagram_Preferences", Context.MODE_PRIVATE);
         String id = s.getString("id", null);
-        String access_token = s.getString("access_token",null);
+        String access_token = s.getString("access_token", null);
         String url = "/users/"+id+"/follows?access_token="+access_token;
 
 
-        InstagramAPICall a = new InstagramAPICall(url);
-        a.execute();
+       /* InstagramAPICall a = new InstagramAPICall(url);
+        a.execute();*/
+
+        //AppData.createInstagramIntent("image/*", Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/File_Name.jpg", this);
     }
 
     @Override
