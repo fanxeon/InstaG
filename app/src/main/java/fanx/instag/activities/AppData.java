@@ -138,9 +138,9 @@ public class AppData {
     }
 
 
-    public String getAccessToken(Context c)
+    public static String getAccessToken(Context c)
     {
-        SharedPreferences s = c.getSharedPreferences(SHARED, Context.MODE_PRIVATE);
+        SharedPreferences s = c.getSharedPreferences("Instagram_Preferences", Context.MODE_PRIVATE);
         return s.getString("access_token",null);
     }
 

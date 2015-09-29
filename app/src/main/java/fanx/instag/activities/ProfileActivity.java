@@ -17,8 +17,8 @@ public class ProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         //Sandip Shrestha
-        TextView full_name =  ((TextView) findViewById(R.id.full_name));
-        TextView username = ((TextView)findViewById(R.id.username));
+        TextView full_name =  ((TextView) findViewById(R.id.label_fullname));
+        TextView username = ((TextView)findViewById(R.id.label_username));
         TextView bio = ((TextView)findViewById(R.id.bio));
         TextView website = ((TextView)findViewById(R.id.website));
         TextView mediaCounts =((TextView)findViewById(R.id.mediacounts));

@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Full Name"
-                android:id="@+id/full_name"
+                android:id="@+id/label_fullname"
                 android:layout_column="0" />
         </TableRow>
 
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Username:"
-                android:id="@+id/username"
+                android:id="@+id/label_username"
                 android:layout_column="0" />
         </TableRow>
 
