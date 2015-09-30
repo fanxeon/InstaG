@@ -153,8 +153,8 @@ public class AppData {
     }
 
 
-    public String getUserId(Context c){
-        SharedPreferences s = c.getSharedPreferences(SHARED, Context.MODE_PRIVATE);
+    public static String getUserId(Context c){
+        SharedPreferences s = c.getSharedPreferences("Instagram_Preferences", Context.MODE_PRIVATE);
         return s.getString("id",null);
     }
 

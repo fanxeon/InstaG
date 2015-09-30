@@ -1,11 +1,15 @@
 package fanx.instag.activities.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +21,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import fanx.instag.activities.AppData;
+import fanx.instag.activities.DisplayUserPhotoActivity;
 
 /**
  * Created by SShrestha on 26/09/2015.
@@ -93,6 +98,16 @@ public class InstagramCurrentUserProfile extends AsyncTask <Void, Void, JSONObje
 
             JSONObject counts = result.getJSONObject("counts");
             textView_mediaCounts.setText(counts.getString("media"));
+            textView_mediaCounts.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            textView_mediaCounts.setTextColor(Color.parseColor("#0000ff"));
+            textView_mediaCounts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context_userProfileActivity, DisplayUserPhotoActivity.class);
+                    context_userProfileActivity.startActivity(i);
+                }
+            });
+
             textView_followsCounts.setText(counts.getString("follows"));
             textView_followed_byCounts.setText(counts.getString("followed_by"));
 

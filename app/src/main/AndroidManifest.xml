@@ -104,6 +104,10 @@
             android:name=".activities.DiscoverActivity"
             android:label="@string/title_activity_discover" >
         </activity>
+        <activity
+            android:name=".activities.DisplayUserPhotoActivity"
+            android:label="@string/title_activity_display_user_photo" >
+        </activity>
     </application>
 
 </manifest>

@@ -61,6 +61,7 @@
     <string name="title_activity_search_user">Search User</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_discover">DiscoverActivity</string>
+    <string name="title_activity_display_user_photo">Photos Uploaded by Current User</string>
 
 
 

@@ -62,6 +62,7 @@ public class UserFeedActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+
         Log.e("UserFeedActivity", "onPause");
     }
 
