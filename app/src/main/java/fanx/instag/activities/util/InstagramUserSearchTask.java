@@ -116,6 +116,7 @@ public class InstagramUserSearchTask extends AsyncTask<String,Void,ArrayList<Ins
                 holder.textView_fullname = (TextView) convertView.findViewById(R.id.textView_fullname);
                 holder.textView_username = (TextView) convertView.findViewById(R.id.textView_username);
                 holder.textView_userid = (TextView) convertView.findViewById(R.id.textView_userid);
+				holder.imageView_profile_picture = (ImageView) convertView.findViewById(R.id.profile_picture);
                 convertView.setTag(holder);
             }
             else
@@ -126,9 +127,8 @@ public class InstagramUserSearchTask extends AsyncTask<String,Void,ArrayList<Ins
             holder.textView_fullname.setText(instagramUsers.get(position).first_name+" "+instagramUsers.get(position).last_name);
             holder.textView_username.setText(instagramUsers.get(position).username);
             holder.textView_userid.setText(instagramUsers.get(position).id);
-            //holder.imageView_profile_picture = new ImageView(convertView.getContext());
-            //ImageLoadTask i = new ImageLoadTask(instagramUsers.get(position).profile_picture, holder.imageView_profile_picture);
-            //i.execute();
+            ImageLoadTask i = new ImageLoadTask(instagramUsers.get(position).profile_picture, holder.imageView_profile_picture);
+            i.execute();
             return convertView;
 
         }
