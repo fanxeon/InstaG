@@ -40,7 +40,7 @@ public class SearchUserActivity extends Activity {
 
                 if (query.length() > 3) {
                     Log.e("SearchUserActivity", "onQueryTextSubmit");
-                    instagramUserSearchTask.execute("sandip");
+                    instagramUserSearchTask.execute(query);
                     searchResultListView.setVisibility(SearchView.VISIBLE);
                 } else {
                     searchResultListView.setVisibility(SearchView.INVISIBLE);
