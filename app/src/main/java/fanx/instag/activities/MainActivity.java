@@ -382,6 +382,7 @@ public class MainActivity extends TabActivity
 
     }
 
+    @Override
     protected void onStart() {
         super.onStart();  // Always call the superclass method first
         // The activity is either being restarted or started for the first time

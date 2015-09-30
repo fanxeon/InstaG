@@ -1,9 +1,4 @@
 package fanx.instag.activities.util;
-
-/**
- * Created by SShrestha on 25/09/2015.
- */
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -123,7 +118,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
     private String getCode(String url, String postParams) throws Exception {
 
         URL obj = new URL(url);
-        Log.e("URL",url);
         // First set the default cookie manager.
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         httpsConnection = (HttpsURLConnection) obj.openConnection();
@@ -214,7 +208,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
         // Get the response cookies
         setCookies(httpsConnection.getHeaderFields().get("Set-Cookie"));
-        Log.e("GetPageContent", response.toString());
         return response.toString();
     }
 
@@ -251,7 +244,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
             }
         }
 
-        Log.e("Parameters",result.toString() );
         return result.toString();
 
     }
