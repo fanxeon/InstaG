@@ -1,10 +1,13 @@
 package fanx.instag.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,8 +41,32 @@ public class ProfileActivity extends Activity {
 
         instagramUser.execute();
 
+        Button b = (Button) findViewById(R.id.button_bluetooth);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProfileActivity.this, BluetoothActivity.class);
+                startActivity(i);
+            }
+        });
 
+        /*Button server = (Button) findViewById(R.id.button_server);
+        server.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProfileActivity.this, Sendingdata_serverActivity.class);
+                startActivity(i);
+            }
+        });
 
+        Button client = (Button) findViewById(R.id.button_client);
+        client.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProfileActivity.this, SendingdataActivity.class);
+                startActivity(i);
+            }
+        });*/
 
     }
 

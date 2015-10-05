@@ -62,6 +62,9 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_discover">DiscoverActivity</string>
     <string name="title_activity_display_user_photo">Photos Uploaded by Current User</string>
+    <string name="title_activity_bluetooth">Bluetooth Activity</string>
+    <string name="title_activity_sendingdata_server">Sendingdata_serverActivity</string>
+    <string name="title_activity_sendingdata">SendingdataActivity</string>
 
 
 
