@@ -175,11 +175,7 @@ public class ImageCache {
 			setRetainInstance(true);
 		}
 
-		/**
-		 * Store a single object in this Fragment.
-		 *
-		 * @param object The object to store
-		 */
+
 		public void setcache(ImageCache cache) {
 			this.cache = cache;
 		}

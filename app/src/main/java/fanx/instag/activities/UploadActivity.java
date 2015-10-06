@@ -284,7 +284,12 @@ public class UploadActivity extends Activity implements OnClickListener {
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Unable to take photo. Try later.", Toast.LENGTH_LONG).show();
             }
+            update();
         }
+    }
+    public void update()
+    {
+        imgadapter.notifyDataSetChanged();
     }
     public static List<String> RetriveCapturedImagePath() {
         List<String> tFileList = new ArrayList<String>();
