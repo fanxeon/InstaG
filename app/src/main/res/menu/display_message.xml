@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="fax.instag.activities.DisplayMessageActivity" >
+    
+    <!-- Share -->
+    <item android:id="@+id/action_share"
+          android:icon="@drawable/ic_action_share"
+          android:title="Share"
+        android:showAsAction="always"
+          />
+    
+    <!-- Discard -->
+    <item android:id="@+id/action_discard"
+          android:icon="@drawable/ic_action_discard"
+          android:title="Discard"
+        android:showAsAction="always"
+        />
+    
+</menu>

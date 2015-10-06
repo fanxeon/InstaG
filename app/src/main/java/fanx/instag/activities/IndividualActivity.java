@@ -1,161 +1,129 @@
 package fanx.instag.activities;
 
-import fanx.instag.activities.util.SystemUiHider;
-
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.os.Build;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
+import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.ViewConfiguration;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.lang.reflect.Field;
 
 import fanx.instag.R;
+import fanx.instag.utils.Utils;
+import fanx.instag.database.DatabaseManager;
+import fanx.instag.database.Photo;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- *
- * @see SystemUiHider
- */
 public class IndividualActivity extends Activity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-
-    /**
-     * If set, will toggle the system UI visibility upon interaction. Otherwise,
-     * will show the system UI visibility upon interaction.
-     */
-    private static final boolean TOGGLE_ON_CLICK = true;
-
-    /**
-     * The flags to pass to {@link SystemUiHider#getInstance}.
-     */
-    private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-
-    /**
-     * The instance of the {@link SystemUiHider} for this activity.
-     */
-    private SystemUiHider mSystemUiHider;
-
+    private Photo photoDetails = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_display_message);
+        setContentView(R.layout.activity_display_message);
+        Intent intent = getIntent();
 
-        setContentView(R.layout.activity_individual);
+        String position = intent.getExtras().getString(UploadActivity.STRING_ID);
+        ImageView imageView = (ImageView) findViewById(R.id.SingleView);
 
-        final View controlsView = findViewById(R.id.fullscreen_content_controls);
-        final View contentView = findViewById(R.id.fullscreen_content);
+        final DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        final int height = displayMetrics.heightPixels;
+        final int width = displayMetrics.widthPixels;
 
-        // Set up an instance of SystemUiHider to control the system UI for
-        // this activity.
-        mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
-        mSystemUiHider.setup();
-        mSystemUiHider
-                .setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-                    // Cached values.
-                    int mControlsHeight;
-                    int mShortAnimTime;
+        final int longest = (height > width ? height : width) / 2;
+        photoDetails = DatabaseManager.getInstance(getApplicationContext())
+                .getPhoto(position, longest, longest);
 
-                    @Override
-                    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-                    public void onVisibilityChange(boolean visible) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                            // If the ViewPropertyAnimator API is available
-                            // (Honeycomb MR2 and later), use it to animate the
-                            // in-layout UI controls at the bottom of the
-                            // screen.
-                            if (mControlsHeight == 0) {
-                                mControlsHeight = controlsView.getHeight();
-                            }
-                            if (mShortAnimTime == 0) {
-                                mShortAnimTime = getResources().getInteger(
-                                        android.R.integer.config_shortAnimTime);
-                            }
-                            controlsView.animate()
-                                    .translationY(visible ? 0 : mControlsHeight)
-                                    .setDuration(mShortAnimTime);
-                        } else {
-                            // If the ViewPropertyAnimator APIs aren't
-                            // available, simply show or hide the in-layout UI
-                            // controls.
-                            controlsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-                        }
+        this.getActionBar().setTitle(photoDetails.getPhotoID());
+        imageView.setImageBitmap(photoDetails.getBitmap());
+        //Toast.makeText(getApplicationContext(), photoDetails.getDescription(), Toast.LENGTH_LONG).show();
 
-                        if (visible && AUTO_HIDE) {
-                            // Schedule a hide().
-                            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-                        }
-                    }
-                });
+        // -- Text view for Description --//
+        TextView textView = (TextView) findViewById(R.id.Description);
 
-        // Set up the user interaction to manually show or hide the system UI.
-        contentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TOGGLE_ON_CLICK) {
-                    mSystemUiHider.toggle();
-                } else {
-                    mSystemUiHider.show();
-                }
-            }
-        });
+        textView.setText(photoDetails.getDescription() + "\n@ " + photoDetails.getAlbum());
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        getMenuInflater().inflate(R.menu.display_message, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
 
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
+        //-- ACTION BAR IMPLEMNTATION @ FAN --//
+        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                // Share current image
+                openShare();
+                return true;
+            case R.id.action_discard:
+                // Delete current image
+                discard();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-    };
+        //-- ACTION BAR END --//
+    }
+    private void getPhotoInfo() {
+        AlertDialog.Builder infoDialog =  new AlertDialog.Builder(this);
+        infoDialog.setTitle(photoDetails.getPhotoID());
+        infoDialog.setMessage("Album : " + photoDetails.getAlbum() + "\nUpload : "
+                + photoDetails.isUploadedToServerAsYesNO());
+        infoDialog.show();
 
-    Handler mHideHandler = new Handler();
-    Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mSystemUiHider.hide();
+    }
+
+    private void setOverflowShowingAlways() {
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            menuKeyField.setAccessible(true);
+            menuKeyField.setBoolean(config, false);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    };
+    }
 
-    /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    private void openShare() {
+
+    }
+
+    private void discard()
+    {
+        int n = DatabaseManager.getInstance(getApplicationContext()).deletePhoto(photoDetails.getPhotoID());
+
+        if( n > 0 )
+            Toast.makeText(getApplicationContext(), "Photo deleted.", Toast.LENGTH_LONG).show();
+
+        Utils.setIndividualPhotoDeleted(true);
+        Utils.setDeletedPhotoID(photoDetails.getPhotoID());
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
     }
 }

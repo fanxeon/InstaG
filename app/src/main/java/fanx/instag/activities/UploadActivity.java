@@ -2,58 +2,49 @@ package fanx.instag.activities;
 
 import android.animation.Animator;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-
-
-import android.graphics.Camera;
-import android.media.Image;
-import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.TextView;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+
 import fanx.instag.R;
+import fanx.instag.utils.AddToCacheTask;
+import fanx.instag.utils.Utils;
+import fanx.instag.adapter.ImageAdapter;
+import fanx.instag.adapter.ImageCache;
+import fanx.instag.database.DatabaseManager;
+import fanx.instag.database.Photo;
+import fanx.instag.database.PhotoManager;
 
 public class UploadActivity extends Activity implements OnClickListener {
     // Declaration take photo
@@ -62,13 +53,16 @@ public class UploadActivity extends Activity implements OnClickListener {
     final int CAMERA_CAPTURE = 1;
     private Uri picUri;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String photoPath = null;
+    String newPhotoID = null;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     // Grid view and image path
-    public static GridView grid;
+    public static 	GridView gridview;
     public static  List<String> listOfImagesPath;
-
+    Bitmap gridBitmap = null;
     public static final String GridViewDemo_ImagePath =
-            Environment.getExternalStorageDirectory().getAbsolutePath() + "/GridViewDemo/";
+            Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdcard/InstaG/";
 
     // Individual view and animation effect
     private Animator mCurrentAnimator;
@@ -79,7 +73,16 @@ public class UploadActivity extends Activity implements OnClickListener {
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     private ImageView expandedImageView;
-
+    // NEW
+    protected ImageAdapter imgadapter;
+    private ArrayList<String> list = null;
+    private String descriptionStr = null;
+    Bitmap individualBitmap = null;
+    AlertDialog.Builder albumDialog;
+    int indx = 0;
+    ArrayList<String> albumList = null;
+    public final static String LIST_NAME = "AdapterList";
+    public final static String STRING_ID = "string_id";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +93,20 @@ public class UploadActivity extends Activity implements OnClickListener {
         captureBtn2 = (Button)findViewById(R.id.capture_btn2);
         captureBtn2.setOnClickListener(this);
         // Grid view
-        grid = (GridView) findViewById(R.id.gridviewimg);
-
+        DatabaseManager db = DatabaseManager.getInstance(this.getApplicationContext());
+        list = db.getPhotoIDs();
+        ImageCache cache = getImageCache(this.getFragmentManager());
+        gridview = (GridView) findViewById(R.id.gridview);
+        gridview.setDrawSelectorOnTop(true);
+        imgadapter = new ImageAdapter(this,cache);
+        imgadapter.setList(list);
+        gridview.setAdapter(imgadapter);
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                toIndividual(v, position);
+            }
+        });
+        /*
         listOfImagesPath = null;
         listOfImagesPath = RetriveCapturedImagePath();
         if(listOfImagesPath!=null){
@@ -114,30 +129,43 @@ public class UploadActivity extends Activity implements OnClickListener {
                 }
             });
 
-        }
+        }*/
+
+
 
 
     }
+
+
     @Override
     public void onClick(View arg0) {
         // TODO Auto-generated method stub
         if (arg0.getId() == R.id.capture_btn1) {
+            newPhotoID = PhotoManager.getInstance(this).getCurrentTimeStampAsString();
+            File fileDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File photoFile = null;
+            Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
             try {
+                photoFile = File.createTempFile(newPhotoID, ".jpg", fileDirectory);
+                photoPath = photoFile.getAbsolutePath();
 
-                //use standard intent to capture an image
-                Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //we will handle the returned data in onActivityResult
-                startActivityForResult(captureIntent, CAMERA_CAPTURE);
-
-
-            } catch (ActivityNotFoundException anfe) {
-                //display an error message
-                String errorMessage = "Whoops - your device doesn't support capturing images!";
-                Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-                toast.show();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
             }
-        // Test Custom Camera
+
+            if (photoFile != null) {
+                takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+
+                //takePicIntent.putExtra(Photo.PHOTO_ID, photoID);
+                startActivityForResult(takePicIntent, REQUEST_IMAGE_CAPTURE);
+                //use standard intent to capture an image
+
+            }
+
+
+            // Test Custom Camera
         }else if (arg0.getId() == R.id.capture_btn2) {
 
             try {
@@ -181,7 +209,7 @@ public class UploadActivity extends Activity implements OnClickListener {
 
     private void customCamera() {
         Intent CameraIntent = new Intent(UploadActivity.this, CameraActivity.class);
-        startActivityForResult(CameraIntent,CAMERA_CAPTURE);
+        startActivityForResult(CameraIntent, CAMERA_CAPTURE);
 
     }
 
@@ -190,36 +218,74 @@ public class UploadActivity extends Activity implements OnClickListener {
 
 
 
+    /*
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (resultCode == RESULT_OK) {
+                //user is returning from capturing an image using the camera
+                if(requestCode == CAMERA_CAPTURE) {
+                    Bundle extras = data.getExtras();
+                    Bitmap thePic = extras.getParcelable("data");
+                    String imgcurTime = dateFormat.format(new Date());
+                    File imageDirectory = new File(GridViewDemo_ImagePath);
+                    imageDirectory.mkdirs();
+                    String _path = GridViewDemo_ImagePath + imgcurTime + ".jpg";
+                    try {
+                        FileOutputStream out = new FileOutputStream(_path);
+                        thePic.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                        out.close();
+                    } catch (FileNotFoundException e) {
+                        e.getMessage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    listOfImagesPath = null;
+                    listOfImagesPath = RetriveCapturedImagePath();
+                    if (listOfImagesPath != null) {
+                        grid.setAdapter(new ImageListAdapter(this, listOfImagesPath));
+                    }
 
+                }
+            }
+        }*/
+    public ArrayList<String> getList() {
+        return imgadapter.getList();
+    }
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            //user is returning from capturing an image using the camera
-            if(requestCode == CAMERA_CAPTURE) {
-                Bundle extras = data.getExtras();
-                Bitmap thePic = extras.getParcelable("data");
-                String imgcurTime = dateFormat.format(new Date());
-                File imageDirectory = new File(GridViewDemo_ImagePath);
-                imageDirectory.mkdirs();
-                String _path = GridViewDemo_ImagePath + imgcurTime + ".jpg";
+
+            descriptionStr = "Temp";
+
+            gridBitmap = Utils.getGridBitmapFromFile(photoPath, getApplicationContext());
+
+            if (gridBitmap != null) {
+                individualBitmap = Utils.getBitmapFromFile(photoPath);
+
+                // -- Get Album list on Capture view-- //
+                albumList = DatabaseManager.getInstance(getApplicationContext()).getAlbumNames();
+                albumList.toArray(new String[albumList.size()]);
+                indx = 0;
+                AddToCacheTask cacheTask = new AddToCacheTask(getApplicationContext(), getImageCache(getFragmentManager()), gridBitmap);
+                cacheTask.executeOnExecutor(Utils.getThreadPoolExecutorInstance(), newPhotoID);
+                Photo newPhoto = new Photo(newPhotoID, descriptionStr, individualBitmap,
+                        gridBitmap, albumList.get(indx), false);
+
+                getList().add(newPhotoID);
+
+                DatabaseWorker dbWorker = new DatabaseWorker();
+                dbWorker.executeOnExecutor(Utils.getThreadPoolExecutorInstance(), newPhoto);
                 try {
-                    FileOutputStream out = new FileOutputStream(_path);
-                    thePic.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                    out.close();
-                } catch (FileNotFoundException e) {
-                    e.getMessage();
-                } catch (IOException e) {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                listOfImagesPath = null;
-                listOfImagesPath = RetriveCapturedImagePath();
-                if (listOfImagesPath != null) {
-                    grid.setAdapter(new ImageListAdapter(this, listOfImagesPath));
-                }
 
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Unable to take photo. Try later.", Toast.LENGTH_LONG).show();
             }
         }
     }
-
     public static List<String> RetriveCapturedImagePath() {
         List<String> tFileList = new ArrayList<String>();
         List<String> reverseFileList = new ArrayList<String>();
@@ -324,5 +390,84 @@ public class UploadActivity extends Activity implements OnClickListener {
         }
     }
 
+    public void toIndividual(View view, int position) {
+        // Do something in response to button
+        Intent intent = new Intent(this, IndividualActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        //String message = editText.getText().toString();
+        intent.putExtra(STRING_ID, getList().get(position));
+        //intent.putStringArrayListExtra(STRING_LIST, getList());
+        //Animation
+        startActivity(intent);
+        //Animation
+    }
+
+    private ImageCache getImageCache(FragmentManager fragmentManager) {
+
+        return ImageCache.getInstance(fragmentManager);
+    }
+    private class DatabaseWorker extends AsyncTask<Photo, Void , Void> {
+        public DatabaseWorker() {
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected Void doInBackground(Photo... newPhoto){
+            //super(newPhoto);
+            DatabaseManager.getInstance(getApplicationContext()).addPhoto( newPhoto[0], 50);
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            //imgadapter.notifyDataSetChanged();
+            Toast.makeText(getApplicationContext(), "Photo saved.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        Log.e("UploadActivity", "onResume");
+        super.onResume();  // Always call the superclass method first
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        // Activity being restarted from stopped state
+        Log.e("UploadActivity", "onRestart");
+        gridview.smoothScrollToPosition(0);
+        if(Utils.isIndividualPhotoDeleted())
+        {
+            getList().remove(Utils.getDeletedPhotoID());
+            imgadapter.notifyDataSetChanged();
+            Utils.setIndividualPhotoDeleted(false);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("UploadActivity", "onPause");
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("UploadActivity", "onStop");
+    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        //public final static String LIST_NAME = "AdapterList";
+        savedInstanceState.putStringArrayList(LIST_NAME, imgadapter.getList());
+        System.out.println("Length of list being saved to state is " + list.size());
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
 }
