@@ -24,8 +24,8 @@ import java.net.URL;
  *
  */
 public class AppData {
-    private final String API_URL = "https://api.instagram.com/v1";
-    private final String SHARED = "Instagram_Preferences";
+    public static final String API_URL = "https://api.instagram.com/v1";
+    public static final String SHARED = "Instagram_Preferences";
 
     public String response;
 

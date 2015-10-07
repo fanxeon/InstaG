@@ -68,6 +68,16 @@ public class ProfileActivity extends Activity {
             }
         });*/
 
+        TextView testView_SuggestUser = (TextView) findViewById(R.id.textView_SuggestUser);
+
+        testView_SuggestUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), SuggestUserActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     @Override
