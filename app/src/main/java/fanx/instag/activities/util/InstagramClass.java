@@ -19,6 +19,7 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -188,107 +189,109 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
     }
 
-    private String getCode(String url, String postParams) throws Exception {
+    private String getCode(String url, String postParams)  {
+        try {
+            URL obj = new URL(url);
 
-        URL obj = new URL(url);
+            // First set the default cookie manager.
+            CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+            httpsConnection = (HttpsURLConnection) obj.openConnection();
 
-        // First set the default cookie manager.
-        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-        httpsConnection = (HttpsURLConnection) obj.openConnection();
+            //handle redirect manually.
+            httpsConnection.setInstanceFollowRedirects(true);
 
-        //handle redirect manually.
-        httpsConnection.setInstanceFollowRedirects(true);
+            // Acts like a browser
+            httpsConnection.setUseCaches(false);
+            httpsConnection.setRequestMethod("POST");
+            httpsConnection.setRequestProperty("Host", "instagram.com");
+            httpsConnection.setRequestProperty("User-Agent", USER_AGENT);
+            httpsConnection.setRequestProperty("Accept", ACCEPT);
+            httpsConnection.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
 
-        // Acts like a browser
-        httpsConnection.setUseCaches(false);
-        httpsConnection.setRequestMethod("POST");
-        httpsConnection.setRequestProperty("Host", "instagram.com");
-        httpsConnection.setRequestProperty("User-Agent", USER_AGENT);
-        httpsConnection.setRequestProperty("Accept", ACCEPT);
-        httpsConnection.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
-
-        for (String cookie : this.cookies) {
-            httpsConnection.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
-        }
-
-        httpsConnection.setRequestProperty("Connection", "keep-alive");
-        httpsConnection.setRequestProperty("Referer", REFERER);
-        httpsConnection.setRequestProperty("Content-Type", CONTENT_TYPE);
-        httpsConnection.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
-
-        httpsConnection.setDoOutput(true);
-        httpsConnection.setDoInput(true);
-
-        // Prepare data to send across with post request
-        DataOutputStream wr = new DataOutputStream(httpsConnection.getOutputStream());
-        wr.writeBytes(postParams);
-        wr.flush();
-        wr.close();
-
-        System.out.println("Sending post request...");
-
-        // Send post request and get response code
-        if(httpsConnection.getResponseCode() == 200) {
-            InputStream is = httpsConnection.getInputStream();
-
-            String redirectURL = (httpsConnection.getURL()).toString();
-
-            if (redirectURL.contains(REDIRECT_URI+"?code=")) {
-                is.close();
-                return redirectURL.replace(REDIRECT_URI+"?code=", "");
-            } else {
-
-                System.out.println("Obtaining Authorization for first time ...");
-                //Handle Authorization for first time
-                String page = AppData.streamToString(httpsConnection.getInputStream());
-
-                //Get Form Parameter
-                String actionParam = getFormParams(page);
-
-                URL authorizeURL = new URL(redirectURL);
-
-                HttpsURLConnection httpsConnectionAuthorize = (HttpsURLConnection) authorizeURL.openConnection();
-
-                httpsConnectionAuthorize.setInstanceFollowRedirects(true);  //handle redirect manually.
-
-                // Acts like a browser
-                httpsConnectionAuthorize.setUseCaches(false);
-                httpsConnectionAuthorize.setRequestMethod("POST");
-                httpsConnectionAuthorize.setRequestProperty("Host", "instagram.com");
-                httpsConnectionAuthorize.setRequestProperty("User-Agent", USER_AGENT);
-                httpsConnectionAuthorize.setRequestProperty("Accept", ACCEPT);
-                httpsConnectionAuthorize.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
-
-                for (String cookie : this.cookies) {
-                    httpsConnectionAuthorize.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
-                }
-
-                httpsConnectionAuthorize.setRequestProperty("Connection", "keep-alive");
-                httpsConnectionAuthorize.setRequestProperty("Referer", redirectURL);
-                httpsConnectionAuthorize.setRequestProperty("Content-Type", CONTENT_TYPE);
-
-                httpsConnectionAuthorize.setRequestProperty("Content-Length", Integer.toString(actionParam.length()));
-
-                httpsConnectionAuthorize.setDoOutput(true);
-                httpsConnectionAuthorize.setDoInput(true);
-                wr = new DataOutputStream(httpsConnectionAuthorize.getOutputStream());
-                wr.writeBytes(actionParam);
-                wr.flush();
-                wr.close();
-
-                httpsConnectionAuthorize.connect();
-
-                is = httpsConnectionAuthorize.getInputStream();
-
-                redirectURL = (httpsConnectionAuthorize.getURL()).toString();
-
-                System.out.println(redirectURL);
-                if (redirectURL.contains(REDIRECT_URI+"?code="))
-                    return redirectURL.replace(REDIRECT_URI+"?code=", "");
-                else
-                    return null;
-
+            for (String cookie : this.cookies) {
+                httpsConnection.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
             }
+
+            httpsConnection.setRequestProperty("Connection", "keep-alive");
+            httpsConnection.setRequestProperty("Referer", REFERER);
+            httpsConnection.setRequestProperty("Content-Type", CONTENT_TYPE);
+            httpsConnection.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
+
+            httpsConnection.setDoOutput(true);
+            httpsConnection.setDoInput(true);
+
+            // Prepare data to send across with post request
+            DataOutputStream wr = new DataOutputStream(httpsConnection.getOutputStream());
+            wr.writeBytes(postParams);
+            wr.flush();
+            wr.close();
+
+            System.out.println("Sending post request...");
+
+            // Send post request and get response code
+            if(httpsConnection.getResponseCode() == 200) {
+                InputStream is = httpsConnection.getInputStream();
+
+                String redirectURL = (httpsConnection.getURL()).toString();
+
+                if (redirectURL.contains(REDIRECT_URI+"?code=")) {
+                    is.close();
+                    return redirectURL.replace(REDIRECT_URI+"?code=", "");
+                } else {
+                    System.out.println("Obtaining Authorization for first time ...");
+                    //Handle Authorization for first time
+                    String page = AppData.streamToString(httpsConnection.getInputStream());
+
+                    //Get Form Parameter
+                    String actionParam = getFormParams(page);
+
+                    URL authorizeURL = new URL(redirectURL);
+
+                    HttpsURLConnection httpsConnectionAuthorize = (HttpsURLConnection) authorizeURL.openConnection();
+
+                    httpsConnectionAuthorize.setInstanceFollowRedirects(true);  //handle redirect manually.
+
+                    // Acts like a browser
+                    httpsConnectionAuthorize.setUseCaches(false);
+                    httpsConnectionAuthorize.setRequestMethod("POST");
+                    httpsConnectionAuthorize.setRequestProperty("Host", "instagram.com");
+                    httpsConnectionAuthorize.setRequestProperty("User-Agent", USER_AGENT);
+                    httpsConnectionAuthorize.setRequestProperty("Accept", ACCEPT);
+                    httpsConnectionAuthorize.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
+
+                    for (String cookie : this.cookies) {
+                        httpsConnectionAuthorize.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
+                    }
+
+                    httpsConnectionAuthorize.setRequestProperty("Connection", "keep-alive");
+                    httpsConnectionAuthorize.setRequestProperty("Referer", redirectURL);
+                    httpsConnectionAuthorize.setRequestProperty("Content-Type", CONTENT_TYPE);
+
+                    httpsConnectionAuthorize.setRequestProperty("Content-Length", Integer.toString(actionParam.length()));
+
+                    httpsConnectionAuthorize.setDoOutput(true);
+                    httpsConnectionAuthorize.setDoInput(true);
+                    wr = new DataOutputStream(httpsConnectionAuthorize.getOutputStream());
+                    wr.writeBytes(actionParam);
+                    wr.flush();
+                    wr.close();
+
+                    httpsConnectionAuthorize.connect();
+
+                    is = httpsConnectionAuthorize.getInputStream();
+
+                    redirectURL = (httpsConnectionAuthorize.getURL()).toString();
+
+                    System.out.println(redirectURL);
+                    if (redirectURL.contains(REDIRECT_URI+"?code="))
+                        return redirectURL.replace(REDIRECT_URI+"?code=", "");
+                    else
+                        return null;
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
