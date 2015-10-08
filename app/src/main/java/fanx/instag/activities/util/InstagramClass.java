@@ -1,8 +1,8 @@
-package fanx.instag.activities.util;
-
 /**
  * Created by SShrestha on 25/09/2015.
  */
+
+package fanx.instag.activities.util;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,13 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
-
 import fanx.instag.activities.AppData;
 
-
-/**
- * Created by SShrestha on 23/09/15.
- */
 public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
     private List<String> cookies;
     private HttpsURLConnection httpsConnection;
@@ -52,11 +47,9 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
     private static final String REDIRECT_URI = "http://www.vexnepal.org";
 
     private static final String FORCE_CLASSIC_LOGIN_URL = "https://instagram.com/accounts/login/?force_classic_login=&next=/oauth/authorize/%3Fclient_id%3D"+ CLIENT_ID
-            +"%26redirect_uri%3D"+REDIRECT_URI+"%26response_type%3Dcode%26display%3Dtouch%26scope%3Dlikes%2Bcomments%2Brelationships";
-
-    private static final String TOKEN_URL = "https://api.instagram.com/oauth/access_token";
-    private static final String API_URL = "https://api.instagram.com/v1";
-
+            +"%26redirect_uri%3D"+ REDIRECT_URI +"%26response_type%3Dcode%26display%3Dtouch%26scope%3Dlikes%2Bcomments%2Brelationships";
+    private static final String REFERER                 = "https://instagram.com/accounts/login/?force_classic_login=&next=/oauth/authorize/%3Fclient_id%3D"+ CLIENT_ID
+            +"%26redirect_uri%3D"+ REDIRECT_URI +"%26response_type%3Dcode%26display%3Dtouch%26scope%3Dlikes%2Bcomments%2Brelationships";
     final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0";
     final String ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
     final String ACCEPT_LANGUAGE = "en-GB,en-US;q=0.8,en;q=0.6";
@@ -78,6 +71,7 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
             // 1. Send a "GET" request, so that you can extract the form's data.
             String page = this.GetPageContent(FORCE_CLASSIC_LOGIN_URL);
+
             String postParams = this.getFormParams(page, username, password);
 
             // 2. Construct above post's content and then send a POST request for authentication & code
@@ -85,11 +79,10 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
             if (code != null)
                 Log.e("Code", code);
+
             // 3. Request Access Token.
             if (code != null) {
                 this.getAccessToken(code);
-                Intent loginIntent = new Intent(nextIntent);
-                currentActivity.startActivity(loginIntent);
             }
             else {
                 currentActivity.runOnUiThread(new Runnable() {
@@ -109,7 +102,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
     protected void onPostExecute(Boolean result) {
         if (result)
         {
-            //Context c = currentActivity.getApplicationContext();
             Log.e("InstagramClass", "onPostExecute");
             Intent loginIntent = new Intent(nextIntent);
             currentActivity.startActivity(loginIntent);
@@ -117,123 +109,15 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
         }
     }
 
-    private String getCode(String url, String postParams) throws Exception {
-
-        URL obj = new URL(url);
-        Log.e("URL",url);
-        // First set the default cookie manager.
-        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-        httpsConnection = (HttpsURLConnection) obj.openConnection();
-
-        httpsConnection.setInstanceFollowRedirects(true);  //handle redirect manually.
-
-        // Acts like a browser
-        httpsConnection.setUseCaches(false);
-        httpsConnection.setRequestMethod("POST");
-        httpsConnection.setRequestProperty("Host", "instagram.com");
-        httpsConnection.setRequestProperty("User-Agent", USER_AGENT);
-        httpsConnection.setRequestProperty("Accept", ACCEPT);
-        httpsConnection.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
-
-        for (String cookie : this.cookies) {
-            httpsConnection.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
-        }
-
-        httpsConnection.setRequestProperty("Connection", "keep-alive");
-        httpsConnection.setRequestProperty("Referer", "https://instagram.com/accounts/login/?force_classic_login=&next=/oauth/authorize/%3Fclient_id%3D5a842f46c9ab4d8fbbb8bfd1ff1a70d2%26redirect_uri%3Dhttps%3A//github.com/fanxeon/InstaG%26response_type%3Dcode%26display%3Dtouch%26scope%3Dlikes%2Bcomments%2Brelationships");
-        httpsConnection.setRequestProperty("Content-Type", CONTENT_TYPE);
-        httpsConnection.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
-
-        httpsConnection.setDoOutput(true);
-        httpsConnection.setDoInput(true);
-
-
-        // Prepare data to send across with post request
-        DataOutputStream wr = new DataOutputStream(httpsConnection.getOutputStream());
-        wr.writeBytes(postParams);
-        wr.flush();
-        wr.close();
-
-        System.out.println("Sending post request...");
-
-        // Send post request
-        httpsConnection.connect();
-        InputStream is = httpsConnection.getInputStream();
-
-        String redirectURL = (httpsConnection.getURL()).toString();
-
-        System.out.println(redirectURL);
-
-
-
-        if (redirectURL.contains("http://www.vexnepal.org?code=")) {
-            is.close();
-            return redirectURL.replace("http://www.vexnepal.org?code=", "");
-        }
-        else {
-            is = httpsConnection.getInputStream();
-
-            System.out.println(redirectURL);
-
-            String actionParam = getFormParams(AppData.streamToString(is));
-            URL authorizeURL = new URL(redirectURL);
-
-            HttpsURLConnection httpsConnectionAuthorize = (HttpsURLConnection) authorizeURL.openConnection();
-
-            httpsConnectionAuthorize.setInstanceFollowRedirects(true);  //handle redirect manually.
-
-            // Acts like a browser
-            httpsConnectionAuthorize.setUseCaches(false);
-            httpsConnectionAuthorize.setRequestMethod("POST");
-            httpsConnectionAuthorize.setRequestProperty("Host", "instagram.com");
-            httpsConnectionAuthorize.setRequestProperty("User-Agent", USER_AGENT);
-            httpsConnectionAuthorize.setRequestProperty("Accept", ACCEPT);
-            httpsConnectionAuthorize.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
-
-            for (String cookie : this.cookies) {
-                httpsConnectionAuthorize.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
-            }
-
-            httpsConnectionAuthorize.setRequestProperty("Connection", "keep-alive");
-            httpsConnectionAuthorize.setRequestProperty("Referer", redirectURL);
-            httpsConnectionAuthorize.setRequestProperty("Content-Type", CONTENT_TYPE);
-
-            httpsConnectionAuthorize.setRequestProperty("Content-Length", Integer.toString(actionParam.length()));
-
-            httpsConnectionAuthorize.setDoOutput(true);
-            httpsConnectionAuthorize.setDoInput(true);
-            wr = new DataOutputStream(httpsConnectionAuthorize.getOutputStream());
-            wr.writeBytes(actionParam);
-            wr.flush();
-            wr.close();
-
-            System.out.println("Authorizing request...");
-
-            httpsConnectionAuthorize.connect();
-            is = httpsConnectionAuthorize.getInputStream();
-            redirectURL = (httpsConnectionAuthorize.getURL()).toString();
-
-            System.out.println(redirectURL);
-            if (redirectURL.contains("http://www.vexnepal.org?code="))
-                return redirectURL.replace("http://www.vexnepal.org?code=", "");
-            else
-                return null;
-
-        }
-
-    }
-
     private String GetPageContent(String url) throws Exception {
 
         URL obj = new URL(url);
         httpsConnection = (HttpsURLConnection) obj.openConnection();
 
-        // default is GET
-        httpsConnection.setRequestMethod("GET");
-
-        httpsConnection.setUseCaches(false);
-
         // act like a browser
+        httpsConnection.setRequestMethod("GET");
+        httpsConnection.setUseCaches(false);
+        httpsConnection.setRequestProperty("Host", "instagram.com");
         httpsConnection.setRequestProperty("User-Agent", USER_AGENT);
         httpsConnection.setRequestProperty("Accept", ACCEPT);
         httpsConnection.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
@@ -243,7 +127,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
                 httpsConnection.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
             }
         }
-
 
         System.out.println("\nSending 'GET' request to URL : " + url);
         int responseCode = httpsConnection.getResponseCode();
@@ -256,13 +139,15 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
+
         in.close();
 
         // Get the response cookies
         setCookies(httpsConnection.getHeaderFields().get("Set-Cookie"));
-        Log.e("GetPageContent", response.toString());
+
         return response.toString();
     }
+
 
     public String getFormParams(String html, String username, String password)
             throws UnsupportedEncodingException {
@@ -271,10 +156,11 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
         Document doc = Jsoup.parse(html);
 
-        // Google form id
+        // Instagram form id
         Element loginform = doc.getElementById("login-form");
         Elements inputElements = loginform.getElementsByTag("input");
         List<String> paramList = new ArrayList<String>();
+
         for (Element inputElement : inputElements) {
             String key = inputElement.attr("name");
             String value = inputElement.attr("value");
@@ -297,10 +183,116 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
             }
         }
 
-        Log.e("Parameters",result.toString() );
+        Log.e("Parameters", result.toString());
         return result.toString();
 
     }
+
+    private String getCode(String url, String postParams) throws Exception {
+
+        URL obj = new URL(url);
+
+        // First set the default cookie manager.
+        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+        httpsConnection = (HttpsURLConnection) obj.openConnection();
+
+        //handle redirect manually.
+        httpsConnection.setInstanceFollowRedirects(true);
+
+        // Acts like a browser
+        httpsConnection.setUseCaches(false);
+        httpsConnection.setRequestMethod("POST");
+        httpsConnection.setRequestProperty("Host", "instagram.com");
+        httpsConnection.setRequestProperty("User-Agent", USER_AGENT);
+        httpsConnection.setRequestProperty("Accept", ACCEPT);
+        httpsConnection.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
+
+        for (String cookie : this.cookies) {
+            httpsConnection.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
+        }
+
+        httpsConnection.setRequestProperty("Connection", "keep-alive");
+        httpsConnection.setRequestProperty("Referer", REFERER);
+        httpsConnection.setRequestProperty("Content-Type", CONTENT_TYPE);
+        httpsConnection.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
+
+        httpsConnection.setDoOutput(true);
+        httpsConnection.setDoInput(true);
+
+        // Prepare data to send across with post request
+        DataOutputStream wr = new DataOutputStream(httpsConnection.getOutputStream());
+        wr.writeBytes(postParams);
+        wr.flush();
+        wr.close();
+
+        System.out.println("Sending post request...");
+
+        // Send post request and get response code
+        if(httpsConnection.getResponseCode() == 200) {
+            InputStream is = httpsConnection.getInputStream();
+
+            String redirectURL = (httpsConnection.getURL()).toString();
+
+            if (redirectURL.contains(REDIRECT_URI+"?code=")) {
+                is.close();
+                return redirectURL.replace(REDIRECT_URI+"?code=", "");
+            } else {
+
+                System.out.println("Obtaining Authorization for first time ...");
+                //Handle Authorization for first time
+                String page = AppData.streamToString(httpsConnection.getInputStream());
+
+                //Get Form Parameter
+                String actionParam = getFormParams(page);
+
+                URL authorizeURL = new URL(redirectURL);
+
+                HttpsURLConnection httpsConnectionAuthorize = (HttpsURLConnection) authorizeURL.openConnection();
+
+                httpsConnectionAuthorize.setInstanceFollowRedirects(true);  //handle redirect manually.
+
+                // Acts like a browser
+                httpsConnectionAuthorize.setUseCaches(false);
+                httpsConnectionAuthorize.setRequestMethod("POST");
+                httpsConnectionAuthorize.setRequestProperty("Host", "instagram.com");
+                httpsConnectionAuthorize.setRequestProperty("User-Agent", USER_AGENT);
+                httpsConnectionAuthorize.setRequestProperty("Accept", ACCEPT);
+                httpsConnectionAuthorize.setRequestProperty("Accept-Language", ACCEPT_LANGUAGE);
+
+                for (String cookie : this.cookies) {
+                    httpsConnectionAuthorize.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
+                }
+
+                httpsConnectionAuthorize.setRequestProperty("Connection", "keep-alive");
+                httpsConnectionAuthorize.setRequestProperty("Referer", redirectURL);
+                httpsConnectionAuthorize.setRequestProperty("Content-Type", CONTENT_TYPE);
+
+                httpsConnectionAuthorize.setRequestProperty("Content-Length", Integer.toString(actionParam.length()));
+
+                httpsConnectionAuthorize.setDoOutput(true);
+                httpsConnectionAuthorize.setDoInput(true);
+                wr = new DataOutputStream(httpsConnectionAuthorize.getOutputStream());
+                wr.writeBytes(actionParam);
+                wr.flush();
+                wr.close();
+
+                httpsConnectionAuthorize.connect();
+
+                is = httpsConnectionAuthorize.getInputStream();
+
+                redirectURL = (httpsConnectionAuthorize.getURL()).toString();
+
+                System.out.println(redirectURL);
+                if (redirectURL.contains(REDIRECT_URI+"?code="))
+                    return redirectURL.replace(REDIRECT_URI+"?code=", "");
+                else
+                    return null;
+
+            }
+        }
+        return null;
+    }
+
 
     public String getFormParams(String html) throws UnsupportedEncodingException
     {
@@ -308,7 +300,7 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
         Document doc = Jsoup.parse(html);
 
-        // Google form id
+        // iNSTAGRAM form id
         Elements actionform = doc.getElementsByClass("form-actions");
         Elements inputElements = actionform.get(0).getElementsByTag("input");
         List<String> paramList = new ArrayList<String>();
@@ -318,7 +310,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
             if (key.equals("allow")) {
                 value = "Authorize";
-                System.out.println("Value Changed");
             }
 
             if(!key.equals(""))
@@ -342,7 +333,7 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
 
         Log.i("AccessToken", "Getting access token");
 
-        URL url = new URL(TOKEN_URL);
+        URL url = new URL(AppData.TOKEN_URL);
 
         Log.i("AccessToken", "Opening Token URL " + url.toString());
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
@@ -357,7 +348,7 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
                 "&redirect_uri=" + REDIRECT_URI +
                 "&code=" + code);
         writer.flush();
-        String response = streamToString(urlConnection.getInputStream());
+        String response = AppData.streamToString(urlConnection.getInputStream());
         Log.i("AccessToken", "response " + response);
         JSONObject jsonObj = (JSONObject) new JSONTokener(response).nextValue();
 
@@ -372,31 +363,6 @@ public class InstagramClass extends AsyncTask <Void, Void, Boolean>{
         instagramSession.storeAccessToken(mAccessToken, id, user, name, profile_picture);
     }
 
-    private String streamToString(InputStream is) throws Exception
-    {String str = "";
-        if (is != null) {
-            StringBuilder sb = new StringBuilder();
-            String line;
-
-            try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is));
-
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                reader.close();
-            }
-            finally {
-                is.close();
-            }
-
-            str = sb.toString();
-        }
-
-        return str;
-    }
     public List<String> getCookies() {
         return cookies;
     }

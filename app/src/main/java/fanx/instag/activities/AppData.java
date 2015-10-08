@@ -25,6 +25,7 @@ import java.net.URL;
  */
 public class AppData {
     public static final String API_URL = "https://api.instagram.com/v1";
+    public static final String TOKEN_URL = "https://api.instagram.com/oauth/access_token";
     public static final String SHARED = "Instagram_Preferences";
 
     public String response;
@@ -140,7 +141,7 @@ public class AppData {
 
     public static String getAccessToken(Context c)
     {
-        SharedPreferences s = c.getSharedPreferences("Instagram_Preferences", Context.MODE_PRIVATE);
+        SharedPreferences s = c.getSharedPreferences(SHARED, Context.MODE_PRIVATE);
         return s.getString("access_token",null);
     }
 
@@ -154,7 +155,7 @@ public class AppData {
 
 
     public static String getUserId(Context c){
-        SharedPreferences s = c.getSharedPreferences("Instagram_Preferences", Context.MODE_PRIVATE);
+        SharedPreferences s = c.getSharedPreferences(SHARED, Context.MODE_PRIVATE);
         return s.getString("id",null);
     }
 
